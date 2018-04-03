@@ -71,3 +71,11 @@ All of these requests are POST and parameters are passed in the request body.
   message: 'Could not authenticate with given credentials'
 }
 ```
+
+## Environement Variables
+
+```js
+{
+  RESET_TIMEOUT: 300, // seconds
+}
+```
