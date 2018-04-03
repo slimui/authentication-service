@@ -11,8 +11,8 @@ Buffer Authentication Service
   password: 'one_way_hashed',
   productlinks: [
     {
-      name: 'reply',
-      token: 'some_uuid' // send this with username and password to authenticate
+      key: 'some_product_key',
+      token: 'some_product_token' // send this with username and password to authenticate
     }
   ],
   resetToken: 'some_reset_token',
@@ -30,9 +30,9 @@ All of these requests are POST and parameters are passed in the request body.
 
 ### api/create
 
-### api/productlinks/create
+### api/get
 
-### api/productlinks/get
+### api/productlinks/create
 
 ### api/productlinks/remove
 
@@ -40,9 +40,34 @@ All of these requests are POST and parameters are passed in the request body.
 
 ### api/password/reset/start
 
-### api/password/reset/complete
+**Input**
 
-### api/login
+```js
+{
+  email: 'admin@bufferapp.com',
+  // or
+  id: 'some_mongo_id'
+}
+```
+
+**Output**
+
+```js
+// success
+// code: 200
+{
+  success: true,
+  resetToken: 'some_reset_token'
+}
+// fail - email or id
+// code: 400
+{
+  success: false,
+  message: 'Could not start reseting password'
+}
+```
+
+### api/password/reset/complete
 
 **Input**
 
@@ -52,7 +77,8 @@ All of these requests are POST and parameters are passed in the request body.
   // or
   id: 'some_mongo_id',
   // and
-  password: 'some_password'
+  resetToken: 'some_reset_token',
+  password: 'some_new_password'
 }
 ```
 
@@ -64,11 +90,68 @@ All of these requests are POST and parameters are passed in the request body.
 {
   success: true
 }
-// fail
+// fail -
+//    invalid email
+//    invalid id
+//    invalid/missing/expired reset token
+//    invalid/missing password
 // code: 400
 {
   success: false,
-  message: 'Could not authenticate with given credentials'
+  message: 'Could not reset password'
+}
+// fail -
+//    invalid password
+// code: 400
+{
+  success: false,
+  message: 'Invalid password'
+}
+// fail -
+//    expired reset token
+// code: 400
+{
+  success: false,
+  message: 'Password reset expired'
+}
+```
+
+### api/login
+
+**Input**
+
+```js
+{
+  email: 'admin@bufferapp.com',
+  // or
+  id: 'some_mongo_id',
+  // and
+  password: 'some_password',
+  productName: 'reply',
+  productToken: 'some_product_token'
+}
+```
+
+**Output**
+
+```js
+// success
+// code: 200
+{
+  success: true
+}
+// fail - password + email combo
+// code: 400
+{
+  success: false,
+  message: 'Could not authenticate with credentials'
+}
+
+// fail - productName + productToken invalid
+// code: 401
+{
+  success: false,
+  message: 'Invalid product credentials'
 }
 ```
 
