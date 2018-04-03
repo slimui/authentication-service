@@ -34,7 +34,68 @@ All of these requests are POST and parameters are passed in the request body.
 
 ### api/productlinks/create
 
+**Input**
+
+```js
+{
+  email: 'admin@bufferapp.com',
+  // or
+  id: 'some_mongo_id',
+  productName: 'reply'
+}
+```
+
+**Output**
+
+```js
+// success
+// code: 200
+{
+  success: true,
+  productToken: 'some_product_token'
+}
+// fail -
+//    missing/invalid email
+//    missing/invalid id
+//    missing/invalid productName
+// code: 400
+{
+  success: false,
+  message: 'Could not create product link'
+}
+```
+
 ### api/productlinks/remove
+
+**Input**
+
+```js
+{
+  email: 'admin@bufferapp.com',
+  // or
+  id: 'some_mongo_id',
+  productName: 'reply'
+}
+```
+
+**Output**
+
+```js
+// success
+// code: 200
+{
+  success: true
+}
+// fail -
+//    missing/invalid email
+//    missing/invalid id
+//    missing/invalid productName
+// code: 400
+{
+  success: false,
+  message: 'Could not remove product link'
+}
+```
 
 ### api/password/update
 
