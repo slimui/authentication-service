@@ -30,6 +30,8 @@ All of these requests are POST and parameters are passed in the request body.
 
 ### api/create
 
+Creates an new account
+
 **Input**
 
 ```js
@@ -64,11 +66,13 @@ All of these requests are POST and parameters are passed in the request body.
 // code: 400
 {
   success: false,
-  message: 'data must be an object'
+  message: 'Data must be an object'
 }
 ```
 
 ### api/get
+
+Gets an account information
 
 **Input**
 
@@ -106,6 +110,8 @@ All of these requests are POST and parameters are passed in the request body.
 
 ### api/productlinks/create
 
+Creates (or overwrites) a link between the authentication service and an external service
+
 **Input**
 
 ```js
@@ -140,6 +146,8 @@ All of these requests are POST and parameters are passed in the request body.
 
 ### api/productlinks/remove
 
+Removes a link between the authentication service and an external service
+
 **Input**
 
 ```js
@@ -172,6 +180,8 @@ All of these requests are POST and parameters are passed in the request body.
 ```
 
 ### api/password/update
+
+Updates an existing accounts password (requires existing password)
 
 **Input**
 
@@ -215,6 +225,10 @@ All of these requests are POST and parameters are passed in the request body.
 
 ### api/password/reset/start
 
+Initiates a password reset flow
+
+_NOTE: this does not send an email, just creates a expirable token that can be used to set the password_
+
 **Input**
 
 ```js
@@ -243,6 +257,10 @@ All of these requests are POST and parameters are passed in the request body.
 ```
 
 ### api/password/reset/complete
+
+Completes a password reset flow
+
+_NOTE: this does not send an email, just takes a expirable token that can be used to set the password_
 
 **Input**
 
@@ -292,6 +310,8 @@ All of these requests are POST and parameters are passed in the request body.
 ```
 
 ### api/login
+
+Login with an email and password -- requires a product to be linked
 
 **Input**
 
