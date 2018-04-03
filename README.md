@@ -38,6 +38,45 @@ All of these requests are POST and parameters are passed in the request body.
 
 ### api/password/update
 
+**Input**
+
+```js
+{
+  email: 'admin@bufferapp.com',
+  // or
+  id: 'some_mongo_id',
+  password: 'some_password',
+  newPassword: 'some_new_password'
+}
+```
+
+**Output**
+
+```js
+// success
+// code: 200
+{
+  success: true
+}
+// fail -
+//    missing/invalid email
+//    missing/invalid id
+//    missing password
+//    missing newPassword
+// code: 400
+{
+  success: false,
+  message: 'Could not update password'
+}
+// fail -
+//    invalid newPassword
+// code: 400
+{
+  success: false,
+  message: 'New password is invalid'
+}
+```
+
 ### api/password/reset/start
 
 **Input**
