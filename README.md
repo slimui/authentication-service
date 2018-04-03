@@ -30,7 +30,79 @@ All of these requests are POST and parameters are passed in the request body.
 
 ### api/create
 
+**Input**
+
+```js
+{
+  // and
+  email: 'admin@bufferapp.com',
+  password: 'some_password',
+  // optional
+  data: {}
+}
+```
+
+**Output**
+
+```js
+// success
+// code: 200
+{
+  success: true,
+  id: 'some_mongo_id'
+}
+// fail -
+//    missing/invalid email
+//    missing/invalid password
+// code: 400
+{
+  success: false,
+  message: 'Could not create account'
+}
+// fail -
+//    invalid data -- must be undefined or object
+// code: 400
+{
+  success: false,
+  message: 'data must be an object'
+}
+```
+
 ### api/get
+
+**Input**
+
+```js
+{
+  email: 'admin@bufferapp.com',
+  // or
+  id: 'some_mongo_id'
+}
+```
+
+**Output**
+
+```js
+// success
+// code: 200
+{
+  success: true,
+  email: 'admin@bufferapp.com',
+  resetAt: new Date(),
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  lastLoginAt: new Date(),
+  data: {}
+}
+// fail -
+//    missing/invalid email
+//    missing/invalid id
+// code: 400
+{
+  success: false,
+  message: 'Could not find account'
+}
+```
 
 ### api/productlinks/create
 
@@ -41,6 +113,7 @@ All of these requests are POST and parameters are passed in the request body.
   email: 'admin@bufferapp.com',
   // or
   id: 'some_mongo_id',
+  // and
   productName: 'reply'
 }
 ```
@@ -74,6 +147,7 @@ All of these requests are POST and parameters are passed in the request body.
   email: 'admin@bufferapp.com',
   // or
   id: 'some_mongo_id',
+  // and
   productName: 'reply'
 }
 ```
@@ -106,6 +180,7 @@ All of these requests are POST and parameters are passed in the request body.
   email: 'admin@bufferapp.com',
   // or
   id: 'some_mongo_id',
+  // and
   password: 'some_password',
   newPassword: 'some_new_password'
 }
