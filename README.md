@@ -43,3 +43,31 @@ All of these requests are POST and parameters are passed in the request body.
 ### api/password/reset/complete
 
 ### api/login
+
+**Input**
+
+```js
+{
+  email: 'admin@bufferapp.com',
+  // or
+  id: 'some_mongo_id',
+  // and
+  password: 'some_password'
+}
+```
+
+**Output**
+
+```js
+// success
+// code: 200
+{
+  success: true
+}
+// fail
+// code: 400
+{
+  success: false,
+  message: 'Could not authenticate with given credentials'
+}
+```
