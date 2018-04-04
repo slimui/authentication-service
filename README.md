@@ -12,7 +12,8 @@ Buffer Authentication Service
   productlinks: [
     {
       key: 'some_product_key',
-      token: 'some_product_token' // send this with username and password to authenticate
+      token: 'some_product_token', // send this with username and password to authenticate
+      foreignKey: 'some_foreign_key' // link to a product resource
     }
   ],
   resetToken: 'some_reset_token',
@@ -120,7 +121,8 @@ Creates (or overwrites) a link between the authentication service and an externa
   // or
   id: 'some_mongo_id',
   // and
-  productName: 'reply'
+  productName: 'reply',
+  foreignKey: 'some_foreign_key'
 }
 ```
 
@@ -137,6 +139,7 @@ Creates (or overwrites) a link between the authentication service and an externa
 //    missing/invalid email
 //    missing/invalid id
 //    missing/invalid productName
+//    missing/invalid foreignKey
 // code: 400
 {
   success: false,
@@ -327,13 +330,30 @@ Login with an email and password -- requires a product to be linked
 }
 ```
 
+**Input - Moderator Application (login.buffer.com)**
+
+```js
+{
+  email: 'admin@bufferapp.com',
+  // or
+  id: 'some_mongo_id',
+  // and
+  password: 'some_password',
+  productName: 'reply',
+  moderatorName: 'login',
+  moderatorSecret: 'some_moderator_secret'
+}
+```
+
+
 **Output**
 
 ```js
 // success
 // code: 200
 {
-  success: true
+  success: true,
+  foreignKey: 'some_foreign_key'
 }
 // fail - password + email combo
 // code: 400
@@ -355,5 +375,7 @@ Login with an email and password -- requires a product to be linked
 ```js
 {
   RESET_TIMEOUT: 300, // seconds
+  MODERATOR_APP_NAME: 'login',
+  MODERATOR_APP_SECRET: 'some_moderator_secret'
 }
 ```
