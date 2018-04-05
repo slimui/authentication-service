@@ -379,3 +379,7 @@ Verify authenticity with an email and password -- requires a product to be linke
   MODERATOR_APP_SECRET: 'some_moderator_secret'
 }
 ```
+
+## Network Diagrams
+
+![Create Account With Linked Product](images/CreateAccountLinkProduct.png)
