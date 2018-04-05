@@ -312,9 +312,9 @@ _NOTE: this does not send an email, just takes a expirable token that can be use
 }
 ```
 
-### api/login
+### api/verify
 
-Login with an email and password -- requires a product to be linked
+Verify authenticity with an email and password -- requires a product to be linked
 
 **Input**
 
@@ -345,7 +345,6 @@ Login with an email and password -- requires a product to be linked
 }
 ```
 
-
 **Output**
 
 ```js
@@ -353,7 +352,8 @@ Login with an email and password -- requires a product to be linked
 // code: 200
 {
   success: true,
-  foreignKey: 'some_foreign_key'
+  foreignKey: 'some_foreign_key',
+  productToken: 'some_product_token'
 }
 // fail - password + email combo
 // code: 400
