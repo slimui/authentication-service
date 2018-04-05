@@ -383,3 +383,7 @@ Verify authenticity with an email and password -- requires a product to be linke
 ## Network Diagrams
 
 ![Create Account With Linked Product](images/CreateAccountLinkProduct.png)
+
+![Login From Linked Product](images/LoginFromLinkedProduct.png)
+
+![Login From Moderator](images/LoginFromModerator.png)
