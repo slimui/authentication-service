@@ -32,7 +32,7 @@ module.exports = ({ collectionClient }) => async (req, res) => {
     const { insertedId } = await collectionClient.insertOne({
       email,
       password: await hash(password, 10),
-      productlinks: [],
+      productlinks: {},
       resetToken: null,
       resetAt: null,
       createdAt: new Date(),

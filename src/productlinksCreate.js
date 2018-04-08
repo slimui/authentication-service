@@ -1,22 +1,19 @@
 const { ObjectID } = require('mongodb')
-const { promisify } = require('util')
+const uuid = require('uuid/v4')
 const Joi = require('joi')
-const bcrypt = require('bcryptjs')
 const {
   validate,
   parseValidationErrorMessage,
 } = require('./utils')
 
-const hash = promisify(bcrypt.hash)
-
 const schema = Joi.object()
   .keys({
     email: Joi.string(),
     id: Joi.string(),
+    productName: Joi.string().required(),
+    foreignKey: Joi.string().required(),
   })
     .xor('email', 'id')
-
-
 
 module.exports = ({ collectionClient }) => async (req, res) => {
   try {
@@ -30,7 +27,7 @@ module.exports = ({ collectionClient }) => async (req, res) => {
       message: parseValidationErrorMessage({ error }),
     })
   }
-  const { email, id } = req.body
+  const { email, id, productName, foreignKey } = req.body
   try {
     let query
     if (email) {
@@ -40,16 +37,27 @@ module.exports = ({ collectionClient }) => async (req, res) => {
         _id: ObjectID(id),
       }
     }
-    const account = await collectionClient.findOne(query)
-    res.send({
-      ...account,
-      success: true,
-      password: undefined,
-      productlinks: undefined,
-      resetToken: undefined,
-      id: account._id,
-      _id: undefined,
+    const productToken = uuid()
+    const result = await collectionClient.updateOne(query, {
+      $set: {
+        [`productlinks.${productName}`]: {
+          foreignKey,
+          productToken,
+        },
+      },
     })
+    if (result.matchedCount !== 1) {
+      res.status(400).send({
+        success: false,
+        message: `Could not update account with ${ email ? 'email' : 'id' }: ${ email ? email : id }`
+      })
+    } else {
+      res.send({
+        success: true,
+        productToken,
+      })
+    }
+
   } catch (error) {
     res.status(400).send({
       success: false,
