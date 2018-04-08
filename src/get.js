@@ -16,8 +16,6 @@ const schema = Joi.object()
   })
     .xor('email', 'id')
 
-
-
 module.exports = ({ collectionClient }) => async (req, res) => {
   try {
     await validate({
@@ -31,16 +29,21 @@ module.exports = ({ collectionClient }) => async (req, res) => {
     })
   }
   const { email, id } = req.body
-  try {
-    let query
-    if (email) {
-      query = { email }
-    } else {
-      query = {
-        _id: ObjectID(id),
-      }
+  let query
+  if (email) {
+    query = { email }
+  } else {
+    query = {
+      _id: ObjectID(id),
     }
-    const account = await collectionClient.findOne(query)
+  }
+  const account = await collectionClient.findOne(query)
+  if (!account) {
+    return res.status(400).send({
+      success: false,
+      message: `Could not find account with ${ email ? 'email' : 'id' }: ${ email ? email : id }`
+    })
+  } else {
     res.send({
       ...account,
       success: true,
@@ -49,11 +52,6 @@ module.exports = ({ collectionClient }) => async (req, res) => {
       resetToken: undefined,
       id: account._id,
       _id: undefined,
-    })
-  } catch (error) {
-    res.status(400).send({
-      success: false,
-      message: error.message,
     })
   }
 }
