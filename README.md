@@ -9,13 +9,12 @@ Buffer Authentication Service
   _id: ObjectId('some_mongo_id')
   email: 'admin@bufferapp.com', // unique
   password: 'one_way_hashed',
-  productlinks: [
-    {
-      key: 'some_product_key',
+  productlinks: {
+    'some_product_key': {
       token: 'some_product_token', // send this with username and password to authenticate
       foreignKey: 'some_foreign_key' // link to a product resource
     }
-  ],
+  },
   resetToken: 'some_reset_token',
   resetAt: new Date(),
   createdAt: new Date(),
