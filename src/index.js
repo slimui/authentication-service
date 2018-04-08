@@ -8,6 +8,7 @@ const productlinksRemove = require('./productlinksRemove')
 const get = require('./get')
 const passwordUpdate = require('./passwordUpdate')
 const passwordResetStart = require('./passwordResetStart')
+const passwordResetComplete = require('./passwordResetComplete')
 const app = express()
 app.use(bodyParser.json())
 
@@ -30,6 +31,7 @@ const main = async () => {
   app.post('/api/productlinks/remove', productlinksRemove({ collectionClient }))
   app.post('/api/password/update', passwordUpdate({ collectionClient }))
   app.post('/api/password/reset/start', passwordResetStart({ collectionClient }))
+  app.post('/api/password/reset/complete', passwordResetComplete({ collectionClient }))
   app.listen(80, () => console.log('Started listening on port 80'))
 }
 
