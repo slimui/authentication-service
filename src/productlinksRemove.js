@@ -27,36 +27,29 @@ module.exports = ({ collectionClient }) => async (req, res) => {
     })
   }
   const { email, id, productName } = req.body
-  try {
-    let query
-    if (email) {
-      query = { email }
-    } else {
-      query = {
-        _id: ObjectID(id),
-      }
+  let query
+  if (email) {
+    query = { email }
+  } else {
+    query = {
+      _id: ObjectID(id),
     }
-    const productToken = uuid()
-    const result = await collectionClient.updateOne(query, {
-      $unset: {
-        [`productlinks.${productName}`]: '',
-      },
-    })
-    if (result.matchedCount !== 1) {
-      res.status(400).send({
-        success: false,
-        message: `Could not update account with ${ email ? 'email' : 'id' }: ${ email ? email : id }`
-      })
-    } else {
-      res.send({
-        success: true,
-      })
-    }
-
-  } catch (error) {
+  }
+  const productToken = uuid()
+  const result = await collectionClient.updateOne(query, {
+    $unset: {
+      [`productlinks.${productName}`]: '',
+    },
+  })
+  if (result.matchedCount !== 1) {
     res.status(400).send({
       success: false,
-      message: error.message,
+      message: `Could not update account with ${ email ? 'email' : 'id' }: ${ email ? email : id }`
+    })
+  } else {
+    res.send({
+      success: true,
     })
   }
+
 }
