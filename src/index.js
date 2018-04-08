@@ -4,6 +4,7 @@ const { MongoClient } = require('mongodb')
 const { promisify } = require('util')
 const create = require('./create')
 const productlinksCreate = require('./productlinksCreate')
+const productlinksRemove = require('./productlinksRemove')
 const get = require('./get')
 const app = express()
 app.use(bodyParser.json())
@@ -24,6 +25,7 @@ const main = async () => {
   app.post('/api/create', create({ collectionClient }))
   app.post('/api/get', get({ collectionClient }))
   app.post('/api/productlinks/create', productlinksCreate({ collectionClient }))
+  app.post('/api/productlinks/remove', productlinksRemove({ collectionClient }))
   app.listen(80, () => console.log('Started listening on port 80'))
 }
 
