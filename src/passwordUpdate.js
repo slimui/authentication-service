@@ -35,6 +35,7 @@ module.exports = ({ collectionClient }) => async (req, res) => {
       message: parseValidationErrorMessage({ error }),
     })
   }
+  // TODO: validate password
   const { id, email, password, newPassword } = req.body
   let query
   if (email) {

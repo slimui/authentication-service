@@ -27,6 +27,7 @@ module.exports = ({ collectionClient }) => async (req, res) => {
       message: parseValidationErrorMessage({ error }),
     })
   }
+  // TODO: validate password
   const { email, password, data = {}} = req.body
   try {
     const { insertedId } = await collectionClient.insertOne({
