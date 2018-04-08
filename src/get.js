@@ -1,3 +1,4 @@
+const { ObjectID } = require('mongodb')
 const { promisify } = require('util')
 const Joi = require('joi')
 const bcrypt = require('bcryptjs')
@@ -10,10 +11,12 @@ const hash = promisify(bcrypt.hash)
 
 const schema = Joi.object()
   .keys({
-    email: Joi.string().required(),
-    password: Joi.string().required(),
-    data: Joi.object(),
+    email: Joi.string(),
+    id: Joi.string(),
   })
+    .xor('email', 'id')
+
+
 
 module.exports = ({ collectionClient }) => async (req, res) => {
   try {
@@ -27,22 +30,25 @@ module.exports = ({ collectionClient }) => async (req, res) => {
       message: parseValidationErrorMessage({ error }),
     })
   }
-  const { email, password, data = {}} = req.body;
+  const { email, id } = req.body;
   try {
-    const { insertedId } = await collectionClient.insertOne({
-      email,
-      password: await hash(password, 10),
-      productlinks: [],
-      resetToken: null,
-      resetAt: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      lastLoginAt: null,
-      data,
-    })
+    let query;
+    if (email) {
+      query = { email }
+    } else {
+      query = {
+        _id: ObjectID(id),
+      }
+    }
+    const account = await collectionClient.findOne(query);
     res.send({
+      ...account,
       success: true,
-      id: insertedId,
+      password: undefined,
+      productlinks: undefined,
+      resetToken: undefined,
+      id: account._id,
+      _id: undefined,
     })
   } catch (error) {
     res.status(400).send({
