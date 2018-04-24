@@ -1,6 +1,7 @@
 const { promisify } = require('util')
 const Joi = require('joi')
 const bcrypt = require('bcryptjs')
+const { createError } = require('@bufferapp/micro-rpc')
 const { validate, parseValidationErrorMessage } = require('./utils')
 
 const hash = promisify(bcrypt.hash)
@@ -26,11 +27,9 @@ module.exports = ({ collectionClient }) => async ({
       schema,
     })
   } catch (error) {
-    console.log('error', error)
-    // res.status(400).send({
-    //   success: false,
-    //   message: parseValidationErrorMessage({ error }),
-    // })
+    throw createError({
+      message: parseValidationErrorMessage({ error }),
+    })
   }
   try {
     const { insertedId } = await collectionClient.insertOne({

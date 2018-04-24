@@ -21,4 +21,17 @@ describe('createUser', () => {
       id: insertedId,
     })
   })
+
+  it('should throw an error with missing parameters', async () => {
+    expect.assertions(1)
+    const insertedId = 'someId'
+    const collectionClient = {
+      insertOne: jest.fn(() => Promise.resolve({ insertedId })),
+    }
+    try {
+      await createUser({ collectionClient })({})
+    } catch (error) {
+      expect(error.message).toBe('"email" is required,"password" is required')
+    }
+  })
 })
