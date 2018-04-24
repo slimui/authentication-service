@@ -3,9 +3,9 @@ const bodyParser = require('body-parser')
 const { MongoClient } = require('mongodb')
 const { promisify } = require('util')
 const createUser = require('./createUser')
+const getUser = require('./getUser')
 // const productlinksCreate = require('./productlinksCreate')
 // const productlinksRemove = require('./productlinksRemove')
-// const get = require('./get')
 // const passwordUpdate = require('./passwordUpdate')
 // const passwordResetStart = require('./passwordResetStart')
 // const passwordResetComplete = require('./passwordResetComplete')
@@ -46,9 +46,10 @@ const main = async () => {
   // app.post('/api/verify', verify({ collectionClient }))
 
   app.post('/rpc', (req, res, next) => {
-    rpc(method('createUser', createUser({ collectionClient })))(req, res).catch(
-      err => next(err),
-    )
+    rpc(
+      method('createUser', createUser({ collectionClient })),
+      method('getUser', getUser({ collectionClient })),
+    )(req, res).catch(err => next(err))
   })
   app.listen(80, () => console.log('Started listening on port 80'))
 }
