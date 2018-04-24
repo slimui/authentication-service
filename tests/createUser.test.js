@@ -34,4 +34,22 @@ describe('createUser', () => {
       expect(error.message).toBe('"email" is required,"password" is required')
     }
   })
+
+  it('should handle error during insertOne', async () => {
+    expect.assertions(1)
+    const email = 'e@mail.com'
+    const password = 'password'
+    const errorMessage = 'this is broken'
+    const collectionClient = {
+      insertOne: jest.fn(() => Promise.reject(new Error(errorMessage))),
+    }
+    try {
+      await createUser({ collectionClient })({
+        email,
+        password,
+      })
+    } catch (error) {
+      expect(error.message).toBe(errorMessage)
+    }
+  })
 })

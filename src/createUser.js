@@ -48,10 +48,8 @@ module.exports = ({ collectionClient }) => async ({
       id: insertedId,
     }
   } catch (error) {
-    console.log('error', error)
-    // res.status(400).send({
-    //   success: false,
-    //   message: error.message,
-    // })
+    throw createError({
+      message: error.message,
+    })
   }
 }
