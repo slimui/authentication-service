@@ -11,19 +11,27 @@ const schema = Joi.object().keys({
   data: Joi.object(),
 })
 
-module.exports = ({ collectionClient }) => async (req, res) => {
+module.exports = ({ collectionClient }) => async ({
+  email,
+  password,
+  data,
+}) => {
   try {
     await validate({
-      value: req.body,
+      value: {
+        email,
+        password,
+        data,
+      },
       schema,
     })
   } catch (error) {
-    res.status(400).send({
-      success: false,
-      message: parseValidationErrorMessage({ error }),
-    })
+    console.log('error', error)
+    // res.status(400).send({
+    //   success: false,
+    //   message: parseValidationErrorMessage({ error }),
+    // })
   }
-  const { email, password, data = {} } = req.body
   try {
     const { insertedId } = await collectionClient.insertOne({
       email,
@@ -36,14 +44,15 @@ module.exports = ({ collectionClient }) => async (req, res) => {
       lastLoginAt: null,
       data,
     })
-    res.send({
+    return {
       success: true,
       id: insertedId,
-    })
+    }
   } catch (error) {
-    res.status(400).send({
-      success: false,
-      message: error.message,
-    })
+    console.log('error', error)
+    // res.status(400).send({
+    //   success: false,
+    //   message: error.message,
+    // })
   }
 }
