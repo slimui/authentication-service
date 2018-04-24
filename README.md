@@ -355,6 +355,7 @@ Verify authenticity with an email and password -- requires a product to be linke
 ```js
 {
   RESET_TIMEOUT: 300, // seconds
+  MONGO_URL:some_mongo_url,
 }
 ```
 
