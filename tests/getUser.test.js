@@ -59,4 +59,18 @@ describe('getUser', () => {
       id,
     })
   })
+
+  it('should throw an error with missing parameters', async () => {
+    expect.assertions(1)
+    const collectionClient = {
+      findOne: jest.fn(() => Promise.resolve()),
+    }
+    try {
+      await getUser({ collectionClient })({})
+    } catch (error) {
+      expect(error.message).toBe(
+        '"value" must contain at least one of [email, id]',
+      )
+    }
+  })
 })
