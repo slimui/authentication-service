@@ -11,7 +11,6 @@ Buffer Authentication Service
   password: 'one_way_hashed',
   productlinks: {
     'some_product_key': {
-      token: 'some_product_token', // send this with username and password to authenticate
       foreignKey: 'some_foreign_key' // link to a product resource
     }
   },
