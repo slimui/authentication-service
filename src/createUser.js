@@ -1,25 +1,21 @@
 const { promisify } = require('util')
 const Joi = require('joi')
 const bcrypt = require('bcryptjs')
-const {
-  validate,
-  parseValidationErrorMessage,
-} = require('./utils')
+const { validate, parseValidationErrorMessage } = require('./utils')
 
 const hash = promisify(bcrypt.hash)
 
-const schema = Joi.object()
-  .keys({
-    email: Joi.string().required(),
-    password: Joi.string().required(),
-    data: Joi.object(),
-  })
+const schema = Joi.object().keys({
+  email: Joi.string().required(),
+  password: Joi.string().required(),
+  data: Joi.object(),
+})
 
 module.exports = ({ collectionClient }) => async (req, res) => {
   try {
     await validate({
       value: req.body,
-      schema
+      schema,
     })
   } catch (error) {
     res.status(400).send({
@@ -27,8 +23,7 @@ module.exports = ({ collectionClient }) => async (req, res) => {
       message: parseValidationErrorMessage({ error }),
     })
   }
-  // TODO: validate password
-  const { email, password, data = {}} = req.body
+  const { email, password, data = {} } = req.body
   try {
     const { insertedId } = await collectionClient.insertOne({
       email,

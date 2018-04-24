@@ -2,14 +2,15 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const { MongoClient } = require('mongodb')
 const { promisify } = require('util')
-const create = require('./create')
-const productlinksCreate = require('./productlinksCreate')
-const productlinksRemove = require('./productlinksRemove')
-const get = require('./get')
-const passwordUpdate = require('./passwordUpdate')
-const passwordResetStart = require('./passwordResetStart')
-const passwordResetComplete = require('./passwordResetComplete')
-const verify = require('./verify')
+const createUser = require('./createUser')
+// const productlinksCreate = require('./productlinksCreate')
+// const productlinksRemove = require('./productlinksRemove')
+// const get = require('./get')
+// const passwordUpdate = require('./passwordUpdate')
+// const passwordResetStart = require('./passwordResetStart')
+// const passwordResetComplete = require('./passwordResetComplete')
+// const verify = require('./verify')
+const { rpc, method } = require('@bufferapp/micro-rpc')
 const app = express()
 app.use(bodyParser.json())
 
@@ -29,20 +30,26 @@ const initDB = async () => {
 
 const main = async () => {
   const { collectionClient } = await initDB()
-  app.post('/api/create', create({ collectionClient }))
-  app.post('/api/get', get({ collectionClient }))
-  app.post('/api/productlinks/create', productlinksCreate({ collectionClient }))
-  app.post('/api/productlinks/remove', productlinksRemove({ collectionClient }))
-  app.post('/api/password/update', passwordUpdate({ collectionClient }))
-  app.post(
-    '/api/password/reset/start',
-    passwordResetStart({ collectionClient }),
-  )
-  app.post(
-    '/api/password/reset/complete',
-    passwordResetComplete({ collectionClient }),
-  )
-  app.post('/api/verify', verify({ collectionClient }))
+  // app.post('/api/create', create({ collectionClient }))
+  // app.post('/api/get', get({ collectionClient }))
+  // app.post('/api/productlinks/create', productlinksCreate({ collectionClient }))
+  // app.post('/api/productlinks/remove', productlinksRemove({ collectionClient }))
+  // app.post('/api/password/update', passwordUpdate({ collectionClient }))
+  // app.post(
+  //   '/api/password/reset/start',
+  //   passwordResetStart({ collectionClient }),
+  // )
+  // app.post(
+  //   '/api/password/reset/complete',
+  //   passwordResetComplete({ collectionClient }),
+  // )
+  // app.post('/api/verify', verify({ collectionClient }))
+
+  app.post('/rpc', (req, res, next) => {
+    rpc(method('createUser', createUser({ collectionClient })))(req, res).catch(
+      err => next(err),
+    )
+  })
   app.listen(80, () => console.log('Started listening on port 80'))
 }
 

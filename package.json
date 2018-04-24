@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test-watch": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -23,9 +24,7 @@
       "node": true,
       "es6": true
     },
-    "plugins": [
-      "prettier"
-    ],
+    "plugins": ["prettier"],
     "rules": {
       "prettier/prettier": [
         2,
@@ -40,6 +39,7 @@
     }
   },
   "dependencies": {
+    "@bufferapp/micro-rpc": "^0.1.7",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
     "express": "^4.16.3",
@@ -51,6 +51,7 @@
     "babel-eslint": "^8.2.3",
     "eslint": "^4.19.1",
     "eslint-plugin-prettier": "^2.6.0",
+    "jest": "^22.4.3",
     "prettier": "^1.12.1"
   }
 }
