@@ -73,4 +73,28 @@ describe('getUser', () => {
       )
     }
   })
+
+  it('should throw an error when account cannot be found', async () => {
+    expect.assertions(2)
+
+    const id = 'some user id'
+    const email = 'e@mail.com'
+    const collectionClient = {
+      findOne: jest.fn(() => Promise.resolve()),
+    }
+    try {
+      await getUser({ collectionClient })({
+        id,
+      })
+    } catch (error) {
+      expect(error.message).toBe(`Could not find account with id: ${id}`)
+    }
+    try {
+      await getUser({ collectionClient })({
+        email,
+      })
+    } catch (error) {
+      expect(error.message).toBe(`Could not find account with email: ${email}`)
+    }
+  })
 })

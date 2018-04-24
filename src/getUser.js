@@ -20,10 +20,6 @@ module.exports = ({ collectionClient }) => async ({ email, id }) => {
       schema,
     })
   } catch (error) {
-    // res.status(400).send({
-    //   success: false,
-    //   message: parseValidationErrorMessage({ error }),
-    // })
     throw createError({
       message: parseValidationErrorMessage({ error }),
     })
@@ -38,13 +34,11 @@ module.exports = ({ collectionClient }) => async ({ email, id }) => {
   }
   const account = await collectionClient.findOne(query)
   if (!account) {
-    // return res.status(400).send({
-    //   success: false,
-    //   message: `Could not find account with ${email ? 'email' : 'id'}: ${
-    //     email ? email : id
-    //   }`,
-    // })
-    console.log('no account...')
+    throw createError({
+      message: `Could not find account with ${email ? 'email' : 'id'}: ${
+        email ? email : id
+      }`,
+    })
   } else {
     return {
       ...account,
