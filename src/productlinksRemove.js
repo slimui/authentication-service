@@ -35,7 +35,6 @@ module.exports = ({ collectionClient }) => async (req, res) => {
       _id: ObjectID(id),
     }
   }
-  const productToken = uuid()
   const result = await collectionClient.updateOne(query, {
     $unset: {
       [`productlinks.${productName}`]: '',

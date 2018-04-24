@@ -132,7 +132,6 @@ Creates (or overwrites) a link between the authentication service and an externa
 // code: 200
 {
   success: true,
-  productToken: 'some_product_token'
 }
 // fail -
 //    missing/invalid email
@@ -324,23 +323,7 @@ Verify authenticity with an email and password -- requires a product to be linke
   id: 'some_mongo_id',
   // and
   password: 'some_password',
-  productName: 'reply',
-  productToken: 'some_product_token'
-}
-```
-
-**Input - Moderator Application (login.buffer.com)**
-
-```js
-{
-  email: 'admin@bufferapp.com',
-  // or
-  id: 'some_mongo_id',
-  // and
-  password: 'some_password',
-  productName: 'reply',
-  moderatorName: 'login',
-  moderatorSecret: 'some_moderator_secret'
+  productName: 'reply'
 }
 ```
 
@@ -351,8 +334,7 @@ Verify authenticity with an email and password -- requires a product to be linke
 // code: 200
 {
   success: true,
-  foreignKey: 'some_foreign_key',
-  productToken: 'some_product_token'
+  foreignKey: 'some_foreign_key'
 }
 // fail - password + email combo
 // code: 400
@@ -361,7 +343,7 @@ Verify authenticity with an email and password -- requires a product to be linke
   message: 'Could not authenticate with credentials'
 }
 
-// fail - productName + productToken invalid
+// fail - productName invalid
 // code: 401
 {
   success: false,
@@ -374,8 +356,6 @@ Verify authenticity with an email and password -- requires a product to be linke
 ```js
 {
   RESET_TIMEOUT: 300, // seconds
-  MODERATOR_APP_NAME: 'login',
-  MODERATOR_APP_SECRET: 'some_moderator_secret'
 }
 ```
 

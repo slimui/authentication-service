@@ -13,14 +13,9 @@ const schema = Joi.object()
     email: Joi.string(),
     id: Joi.string(),
     password: Joi.string().required(),
-    productName: Joi.string(),
-    productToken: Joi.string(),
-    moderatorName: Joi.string(),
-    moderatorSecret: Joi.string(),
+    productName: Joi.string().required(),
   })
     .xor('email', 'id')
-    .xor('productToken', 'moderatorName')
-    .with('moderatorName', 'moderatorSecret')
 
     const sendFailedResponse = ({ res, id, email }) => res.status(400).send({
       success: false,
@@ -44,9 +39,6 @@ module.exports = ({ collectionClient }) => async (req, res) => {
     id,
     password,
     productName,
-    productToken,
-    moderatorName,
-    moderatorSecret
   } = req.body
   let query
   if (email) {
@@ -71,20 +63,9 @@ module.exports = ({ collectionClient }) => async (req, res) => {
     if (!Object.keys(account.productlinks).includes(productName)) {
       return sendFailedResponse({ res, email, id })
     }
-    // if productToken check product token matches
-    if (productToken &&
-      productToken !== account.productlinks[productName].productToken) {
-      return sendFailedResponse({ res, email, id })
-    }
-    if (moderatorName &&
-      moderatorName !== process.env.MODERATOR_APP_NAME &&
-      moderatorSecret !== process.env.MODERATOR_APP_SECRET) {
-      return sendFailedResponse({ res, email, id })
-    }
     res.send({
       success: true,
       foreignKey: account.productlinks[productName].foreignKey,
-      productToken: account.productlinks[productName].productToken,
     })
   }
 }

@@ -17,6 +17,7 @@ const promisifiedMongoClient = promisify(MongoClient)
 
 const initDB = async () => {
   const client = await promisifiedMongoClient.connect(process.env.MONGO_URL)
+  // TODO: check if index exists first
   const collectionClient = client.db(process.env.MONGO_DB).collection('authenticationAccounts')
   await collectionClient.createIndex({ email: 1 }, { unique: 1 })
   return {
