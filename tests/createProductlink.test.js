@@ -70,4 +70,17 @@ describe('createProductlink', () => {
       },
     )
   })
+  it('should throw an error with missing parameters', async () => {
+    expect.assertions(1)
+    const collectionClient = {
+      updateOne: jest.fn(() => Promise.resolve()),
+    }
+    try {
+      await createProductlink({ collectionClient })({})
+    } catch (error) {
+      expect(error.message).toBe(
+        '"productName" is required,"foreignKey" is required,"value" must contain at least one of [email, id]',
+      )
+    }
+  })
 })

@@ -1,5 +1,6 @@
 const { ObjectID } = require('mongodb')
 const Joi = require('joi')
+const { createError } = require('@bufferapp/micro-rpc')
 const { validate, parseValidationErrorMessage } = require('./utils')
 
 const schema = Joi.object()
@@ -28,11 +29,9 @@ module.exports = ({ collectionClient }) => async ({
       schema,
     })
   } catch (error) {
-    console.log('error', error)
-    // res.status(400).send({
-    //   success: false,
-    //   message: parseValidationErrorMessage({ error }),
-    // })
+    throw createError({
+      message: parseValidationErrorMessage({ error }),
+    })
   }
   let query
   if (email) {
