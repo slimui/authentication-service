@@ -38,4 +38,36 @@ describe('createProductlink', () => {
       },
     )
   })
+  it('should create a product link by email', async () => {
+    const email = 'e@mail.com'
+    const productName = 'some product name'
+    const foreignKey = 'some foreign key'
+    const collectionClient = {
+      updateOne: jest.fn(() =>
+        Promise.resolve({
+          matchedCount: 1,
+        }),
+      ),
+    }
+    const response = await createProductlink({ collectionClient })({
+      email,
+      productName,
+      foreignKey,
+    })
+    expect(response).toEqual({
+      success: true,
+    })
+    expect(collectionClient.updateOne).toBeCalledWith(
+      {
+        email,
+      },
+      {
+        $set: {
+          [`productlinks.${productName}`]: {
+            foreignKey,
+          },
+        },
+      },
+    )
+  })
 })
