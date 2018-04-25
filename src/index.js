@@ -4,7 +4,7 @@ const { MongoClient } = require('mongodb')
 const { promisify } = require('util')
 const createUser = require('./createUser')
 const getUser = require('./getUser')
-// const productlinksCreate = require('./productlinksCreate')
+const createProductlink = require('./createProductlink')
 // const productlinksRemove = require('./productlinksRemove')
 // const passwordUpdate = require('./passwordUpdate')
 // const passwordResetStart = require('./passwordResetStart')
@@ -49,6 +49,7 @@ const main = async () => {
     rpc(
       method('createUser', createUser({ collectionClient })),
       method('getUser', getUser({ collectionClient })),
+      method('createProductlink', createProductlink({ collectionClient })),
     )(req, res).catch(err => next(err))
   })
   app.listen(80, () => console.log('Started listening on port 80'))
