@@ -3,7 +3,7 @@ const { createError } = require('@bufferapp/micro-rpc')
 module.exports = ({ AuthenticationAccountModel }) => async ({ email, _id }) => {
   if (!_id && !email) {
     throw createError({
-      message: 'Please specify an _id or email',
+      message: '_id or email must be specified',
     })
   }
   const result = await AuthenticationAccountModel.findOne({

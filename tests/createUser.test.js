@@ -8,30 +8,47 @@ describe('createUser', () => {
   it('should create a new user', async () => {
     const email = 'e@mail.com'
     const password = 'password'
-    const insertedId = 'someId'
-    const collectionClient = {
-      insertOne: jest.fn(() => Promise.resolve({ insertedId })),
+    const _id = 'someId'
+    const AuthenticationAccountModel = function() {
+      return {
+        save: jest.fn(() => Promise.resolve({ _id })),
+      }
     }
-    const response = await createUser({ collectionClient })({
+    const response = await createUser({ AuthenticationAccountModel })({
       email,
       password,
     })
     expect(response).toEqual({
-      success: true,
-      id: insertedId,
+      _id,
     })
   })
 
-  it('should throw an error with missing parameters', async () => {
+  it('should throw an error with missing email', async () => {
     expect.assertions(1)
-    const insertedId = 'someId'
-    const collectionClient = {
-      insertOne: jest.fn(() => Promise.resolve({ insertedId })),
+    const AuthenticationAccountModel = function() {
+      return {
+        save: jest.fn(() => Promise.resolve({ _id: '100' })),
+      }
     }
     try {
-      await createUser({ collectionClient })({})
+      await createUser({ AuthenticationAccountModel })({})
     } catch (error) {
-      expect(error.message).toBe('"email" is required,"password" is required')
+      expect(error.message).toBe('email is a required parameter')
+    }
+  })
+
+  it('should throw an error with missing password', async () => {
+    expect.assertions(1)
+    const email = 'e@mail.com'
+    const AuthenticationAccountModel = function() {
+      return {
+        save: jest.fn(() => Promise.resolve({ _id: '100' })),
+      }
+    }
+    try {
+      await createUser({ AuthenticationAccountModel })({ email })
+    } catch (error) {
+      expect(error.message).toBe('password is a required parameter')
     }
   })
 
@@ -40,11 +57,13 @@ describe('createUser', () => {
     const email = 'e@mail.com'
     const password = 'password'
     const errorMessage = 'this is broken'
-    const collectionClient = {
-      insertOne: jest.fn(() => Promise.reject(new Error(errorMessage))),
+    const AuthenticationAccountModel = function() {
+      return {
+        save: jest.fn(() => Promise.reject(new Error(errorMessage))),
+      }
     }
     try {
-      await createUser({ collectionClient })({
+      await createUser({ AuthenticationAccountModel })({
         email,
         password,
       })
