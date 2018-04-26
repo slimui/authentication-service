@@ -31,7 +31,8 @@ module.exports = ({ mongooseConnection }) => {
     },
     productlinks: [
       {
-        name: {
+        _id: false,
+        productName: {
           type: String,
           required: true,
         },
@@ -55,7 +56,7 @@ module.exports = ({ mongooseConnection }) => {
   })
   authenticationAccountSchema.index(
     {
-      'productlinks.name': 1,
+      'productlinks.productName': 1,
       'productlinks.foreignKey': 1,
     },
     { unique: true },

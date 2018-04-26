@@ -1,10 +1,9 @@
 const express = require('express')
 const mongoose = require('mongoose')
-// const { MongoClient } = require('mongodb')
 const AuthenticationAccountModel = require('./authenticationAccountModel')
 const createUser = require('./createUser')
 const getUser = require('./getUser')
-// const createProductlink = require('./createProductlink')
+const createProductlink = require('./createProductlink')
 // const productlinksRemove = require('./productlinksRemove')
 // const passwordUpdate = require('./passwordUpdate')
 // const passwordResetStart = require('./passwordResetStart')
@@ -63,7 +62,10 @@ const main = async () => {
     rpc(
       method('createUser', createUser({ AuthenticationAccountModel })),
       method('getUser', getUser({ AuthenticationAccountModel })),
-      // method('createProductlink', createProductlink({ collectionClient })),
+      method(
+        'createProductlink',
+        createProductlink({ AuthenticationAccountModel }),
+      ),
     )(req, res).catch(err => next(err))
   })
   app.listen(80, () => console.log('Started listening on port 80'))
