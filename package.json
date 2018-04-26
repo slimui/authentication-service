@@ -47,7 +47,8 @@
     "express": "^4.16.3",
     "joi": "^13.1.2",
     "micro": "^9.3.0",
-    "mongodb": "^3.0.5",
+    "mongoose": "^5.0.16",
+    "mongoose-type-email": "^1.0.5",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
