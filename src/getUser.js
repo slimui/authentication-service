@@ -6,13 +6,9 @@ module.exports = ({ AuthenticationAccountModel }) => async ({ email, _id }) => {
       message: 'Please specify an _id or email',
     })
   }
-  let query
-  if (_id) {
-    query = { _id }
-  } else {
-    query = { email }
-  }
-  const result = await AuthenticationAccountModel.findOne(query)
+  const result = await AuthenticationAccountModel.findOne({
+    $or: [{ _id }, { email }],
+  })
     .select('_id email productlinks resetAt createdAt updatedAt lastLoginAt')
     .exec()
   if (!result) {
