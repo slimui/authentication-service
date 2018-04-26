@@ -22,7 +22,7 @@ module.exports = ({ AuthenticationAccountModel }) => async ({
     })
   }
   try {
-    return await AuthenticationAccountModel.updateOne(
+    const result = await AuthenticationAccountModel.updateOne(
       { $or: [{ _id }, { email }] },
       {
         $addToSet: {
@@ -34,6 +34,14 @@ module.exports = ({ AuthenticationAccountModel }) => async ({
       },
       { runValidators: true },
     )
+    if (result.ok !== 1) {
+      throw createError({
+        message: `Could not update ${JSON.stringify(query)}`,
+      })
+    }
+    return {
+      success: true,
+    }
   } catch (error) {
     throw createError({
       message: error.message,
