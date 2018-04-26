@@ -1,53 +1,24 @@
-const { ObjectID } = require('mongodb')
-const Joi = require('joi')
 const { createError } = require('@bufferapp/micro-rpc')
-const { validate, parseValidationErrorMessage } = require('./utils')
 
-const schema = Joi.object()
-  .keys({
-    email: Joi.string(),
-    id: Joi.string(),
-  })
-  .xor('email', 'id')
-
-module.exports = ({ collectionClient }) => async ({ email, id }) => {
-  try {
-    await validate({
-      value: {
-        email,
-        id,
-      },
-      schema,
-    })
-  } catch (error) {
+module.exports = ({ AuthenticationAccountModel }) => async ({ email, _id }) => {
+  if (!_id && !email) {
     throw createError({
-      message: parseValidationErrorMessage({ error }),
+      message: 'Please specify an _id or email',
     })
   }
   let query
-  if (email) {
+  if (_id) {
+    query = { _id }
+  } else {
     query = { email }
-  } else {
-    query = {
-      _id: ObjectID(id),
-    }
   }
-  const account = await collectionClient.findOne(query)
-  if (!account) {
+  const result = await AuthenticationAccountModel.findOne(query)
+    .select('_id email productlinks resetAt createdAt updatedAt lastLoginAt')
+    .exec()
+  if (!result) {
     throw createError({
-      message: `Could not find account with ${email ? 'email' : 'id'}: ${
-        email ? email : id
-      }`,
+      message: `Could not find user with ${JSON.stringify(query)}`,
     })
-  } else {
-    return {
-      ...account,
-      success: true,
-      password: undefined,
-      productlinks: undefined,
-      resetToken: undefined,
-      id: account._id,
-      _id: undefined,
-    }
   }
+  return result
 }

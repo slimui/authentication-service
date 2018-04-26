@@ -9,8 +9,8 @@ module.exports = ({ AuthenticationAccountModel }) => async ({
       email,
       password,
     })
-    const { _id: id } = await authenticationAccount.save()
-    return { id }
+    const { _id } = await authenticationAccount.save()
+    return { _id }
   } catch (error) {
     throw createError({
       message: error.message,

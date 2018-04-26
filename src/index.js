@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 // const { MongoClient } = require('mongodb')
 const AuthenticationAccountModel = require('./authenticationAccountModel')
 const createUser = require('./createUser')
-// const getUser = require('./getUser')
+const getUser = require('./getUser')
 // const createProductlink = require('./createProductlink')
 // const productlinksRemove = require('./productlinksRemove')
 // const passwordUpdate = require('./passwordUpdate')
@@ -62,7 +62,7 @@ const main = async () => {
   app.post('/rpc', (req, res, next) => {
     rpc(
       method('createUser', createUser({ AuthenticationAccountModel })),
-      // method('getUser', getUser({ collectionClient })),
+      method('getUser', getUser({ AuthenticationAccountModel })),
       // method('createProductlink', createProductlink({ collectionClient })),
     )(req, res).catch(err => next(err))
   })
