@@ -28,31 +28,27 @@ describe('getUser', () => {
     expect(response).toEqual(account)
   })
 
-  it('should get a user by id', async () => {
-    const id = 'some user id'
+  it('should get a user by _id', async () => {
+    const _id = 'some user id'
     const email = 'e@mail.com'
     const account = {
-      _id: id,
+      _id,
       email,
     }
-    const collectionClient = {
-      findOne: jest.fn(() => Promise.resolve(account)),
+    const AuthenticationAccountModel = {
+      findOne: jest.fn(() => ({
+        select: () => ({
+          exec: () => Promise.resolve(account),
+        }),
+      })),
     }
-    const response = await getUser({ collectionClient })({
-      id,
+    const response = await getUser({ AuthenticationAccountModel })({
+      _id,
     })
-    expect(collectionClient.findOne).toBeCalledWith({
-      _id: ObjectID(id),
+    expect(AuthenticationAccountModel.findOne).toBeCalledWith({
+      $or: [{ _id }, { email: undefined }],
     })
-    expect(response).toEqual({
-      success: true,
-      ...account,
-      password: undefined,
-      productlinks: undefined,
-      resetToken: undefined,
-      _id: undefined,
-      id,
-    })
+    expect(response).toEqual(account)
   })
 
   it('should throw an error with missing parameters', async () => {
