@@ -72,16 +72,29 @@ describe('createProductlink', () => {
   })
 
   it('should throw an error with missing parameters', async () => {
-    expect.assertions(1)
-    const collectionClient = {
+    expect.assertions(3)
+    const email = 'e@mail.com'
+    const productName = 'some product name'
+    const AuthenticationAccountModel = {
       updateOne: jest.fn(() => Promise.resolve()),
     }
     try {
-      await createProductlink({ collectionClient })({})
+      await createProductlink({ AuthenticationAccountModel })({})
     } catch (error) {
-      expect(error.message).toBe(
-        '"productName" is required,"foreignKey" is required,"value" must contain at least one of [email, id]',
-      )
+      expect(error.message).toBe('Please specify an _id or email')
+    }
+    try {
+      await createProductlink({ AuthenticationAccountModel })({ email })
+    } catch (error) {
+      expect(error.message).toBe('Please specify a productName')
+    }
+    try {
+      await createProductlink({ AuthenticationAccountModel })({
+        email,
+        productName,
+      })
+    } catch (error) {
+      expect(error.message).toBe('Please specify a foreignKey')
     }
   })
 })
