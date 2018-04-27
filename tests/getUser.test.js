@@ -1,4 +1,3 @@
-const { ObjectID } = require('mongodb')
 const getUser = require('../src/getUser')
 
 describe('getUser', () => {
@@ -7,30 +6,26 @@ describe('getUser', () => {
   })
 
   it('should get a user by email', async () => {
-    const id = 'some user id'
+    const _id = 'some user id'
     const email = 'e@mail.com'
     const account = {
-      _id: id,
+      _id,
       email,
     }
-    const collectionClient = {
-      findOne: jest.fn(() => Promise.resolve(account)),
+    const AuthenticationAccountModel = {
+      findOne: jest.fn(() => ({
+        select: () => ({
+          exec: () => Promise.resolve(account),
+        }),
+      })),
     }
-    const response = await getUser({ collectionClient })({
+    const response = await getUser({ AuthenticationAccountModel })({
       email,
     })
-    expect(collectionClient.findOne).toBeCalledWith({
-      email,
+    expect(AuthenticationAccountModel.findOne).toBeCalledWith({
+      $or: [{ _id: undefined }, { email }],
     })
-    expect(response).toEqual({
-      success: true,
-      ...account,
-      password: undefined,
-      productlinks: undefined,
-      resetToken: undefined,
-      _id: undefined,
-      id,
-    })
+    expect(response).toEqual(account)
   })
 
   it('should get a user by id', async () => {
