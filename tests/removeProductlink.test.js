@@ -80,4 +80,27 @@ describe('removeProductlink', () => {
       expect(error.message).toBe('Please specify a productName')
     }
   })
+
+  it('should handle a not ok error from mongodb', async () => {
+    expect.assertions(1)
+    const _id = 'some user id'
+    const productName = 'some product name'
+    const AuthenticationAccountModel = {
+      updateOne: jest.fn(() =>
+        Promise.resolve({
+          ok: 0,
+        }),
+      ),
+    }
+    try {
+      await removeProductlink({ AuthenticationAccountModel })({
+        _id,
+        productName,
+      })
+    } catch (error) {
+      expect(error.message).toBe(
+        'Could not update {"$or":[{"_id":"some user id"},{}]}',
+      )
+    }
+  })
 })

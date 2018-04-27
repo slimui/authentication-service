@@ -26,13 +26,11 @@ module.exports = ({ AuthenticationAccountModel }) => async ({
     },
   )
   if (result.ok !== 1) {
-    console.log('nope')
-    // res.status(400).send({
-    //   success: false,
-    //   message: `Could not update account with ${email ? 'email' : 'id'}: ${
-    //     email ? email : id
-    //   }`,
-    // })
+    throw createError({
+      message: `Could not update ${JSON.stringify({
+        $or: [{ _id }, { email }],
+      })}`,
+    })
   } else {
     return {
       success: true,
