@@ -37,18 +37,19 @@ describe('createProductlink', () => {
       { runValidators: true },
     )
   })
+
   it('should create a product link by email', async () => {
     const email = 'e@mail.com'
     const productName = 'some product name'
     const foreignKey = 'some foreign key'
-    const collectionClient = {
+    const AuthenticationAccountModel = {
       updateOne: jest.fn(() =>
         Promise.resolve({
-          matchedCount: 1,
+          ok: 1,
         }),
       ),
     }
-    const response = await createProductlink({ collectionClient })({
+    const response = await createProductlink({ AuthenticationAccountModel })({
       email,
       productName,
       foreignKey,
@@ -56,19 +57,20 @@ describe('createProductlink', () => {
     expect(response).toEqual({
       success: true,
     })
-    expect(collectionClient.updateOne).toBeCalledWith(
+    expect(AuthenticationAccountModel.updateOne).toBeCalledWith(
+      { $or: [{ _id: undefined }, { email }] },
       {
-        email,
-      },
-      {
-        $set: {
-          [`productlinks.${productName}`]: {
+        $addToSet: {
+          productlinks: {
             foreignKey,
+            productName,
           },
         },
       },
+      { runValidators: true },
     )
   })
+
   it('should throw an error with missing parameters', async () => {
     expect.assertions(1)
     const collectionClient = {
