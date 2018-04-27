@@ -53,15 +53,11 @@ describe('getUser', () => {
 
   it('should throw an error with missing parameters', async () => {
     expect.assertions(1)
-    const collectionClient = {
-      findOne: jest.fn(() => Promise.resolve()),
-    }
+    const AuthenticationAccountModel = {}
     try {
-      await getUser({ collectionClient })({})
+      await getUser({ AuthenticationAccountModel })({})
     } catch (error) {
-      expect(error.message).toBe(
-        '"value" must contain at least one of [email, id]',
-      )
+      expect(error.message).toBe('_id or email must be specified')
     }
   })
 
