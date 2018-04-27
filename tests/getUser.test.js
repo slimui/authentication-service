@@ -64,24 +64,35 @@ describe('getUser', () => {
   it('should throw an error when account cannot be found', async () => {
     expect.assertions(2)
 
-    const id = 'some user id'
+    const _id = 'some user id'
     const email = 'e@mail.com'
-    const collectionClient = {
-      findOne: jest.fn(() => Promise.resolve()),
+    // const collectionClient = {
+    //   findOne: jest.fn(() => Promise.resolve()),
+    // }
+    const AuthenticationAccountModel = {
+      findOne: jest.fn(() => ({
+        select: () => ({
+          exec: () => Promise.resolve(),
+        }),
+      })),
     }
     try {
-      await getUser({ collectionClient })({
-        id,
+      await getUser({ AuthenticationAccountModel })({
+        _id,
       })
     } catch (error) {
-      expect(error.message).toBe(`Could not find account with id: ${id}`)
+      expect(error.message).toBe(
+        'Could not find user with query: {"$or":[{"_id":"some user id"},{}]}',
+      )
     }
     try {
-      await getUser({ collectionClient })({
+      await getUser({ AuthenticationAccountModel })({
         email,
       })
     } catch (error) {
-      expect(error.message).toBe(`Could not find account with email: ${email}`)
+      expect(error.message).toBe(
+        'Could not find user with query: {"$or":[{},{"email":"e@mail.com"}]}',
+      )
     }
   })
 })

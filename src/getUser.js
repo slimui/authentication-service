@@ -13,7 +13,9 @@ module.exports = ({ AuthenticationAccountModel }) => async ({ email, _id }) => {
     .exec()
   if (!result) {
     throw createError({
-      message: `Could not find user with ${JSON.stringify(query)}`,
+      message: `Could not find user with query: ${JSON.stringify({
+        $or: [{ _id }, { email }],
+      })}`,
     })
   }
   return result
