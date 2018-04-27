@@ -1,11 +1,7 @@
 const { promisify } = require('util')
-const { ObjectID } = require('mongodb')
 const bcrypt = require('bcryptjs')
 const Joi = require('joi')
-const {
-  validate,
-  parseValidationErrorMessage,
-} = require('./utils')
+const { validate, parseValidationErrorMessage } = require('./utils')
 const compare = promisify(bcrypt.compare)
 const hash = promisify(bcrypt.hash)
 
@@ -16,18 +12,21 @@ const schema = Joi.object()
     password: Joi.string().required(),
     newPassword: Joi.string().required(),
   })
-    .xor('email', 'id')
+  .xor('email', 'id')
 
-const sendFailedResponse = ({ res, id, email }) => res.status(400).send({
-  success: false,
-  message: `Could not update account with ${ email ? 'email' : 'id' }: ${ email ? email : id }`
-})
+const sendFailedResponse = ({ res, id, email }) =>
+  res.status(400).send({
+    success: false,
+    message: `Could not update account with ${email ? 'email' : 'id'}: ${
+      email ? email : id
+    }`,
+  })
 
 module.exports = ({ collectionClient }) => async (req, res) => {
   try {
     await validate({
       value: req.body,
-      schema
+      schema,
     })
   } catch (error) {
     res.status(400).send({
@@ -50,14 +49,14 @@ module.exports = ({ collectionClient }) => async (req, res) => {
     // could not find account
     sendFailedResponse({ res, id, email })
   } else {
-    if (!await compare(password, account.password)) {
+    if (!(await compare(password, account.password))) {
       // password mismatch
       sendFailedResponse({ res, id, email })
     } else {
       const result = await collectionClient.updateOne(query, {
         $set: {
-          password: await hash(newPassword, 10)
-        }
+          password: await hash(newPassword, 10),
+        },
       })
       if (result.matchedCount !== 1) {
         // no account was updated

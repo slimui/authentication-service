@@ -5,7 +5,7 @@ const createUser = require('./createUser')
 const getUser = require('./getUser')
 const createProductlink = require('./createProductlink')
 const removeProductlink = require('./removeProductlink')
-// const passwordUpdate = require('./passwordUpdate')
+const updatePassword = require('./updatePassword')
 // const passwordResetStart = require('./passwordResetStart')
 // const passwordResetComplete = require('./passwordResetComplete')
 // const verify = require('./verify')
@@ -70,6 +70,7 @@ const main = async () => {
         'removeProductlink',
         removeProductlink({ AuthenticationAccountModel }),
       ),
+      method('updatePassword', updatePassword({ AuthenticationAccountModel })),
     )(req, res).catch(err => next(err))
   })
   app.listen(80, () => console.log('Started listening on port 80'))
