@@ -4,7 +4,7 @@ const AuthenticationAccountModel = require('./authenticationAccountModel')
 const createUser = require('./createUser')
 const getUser = require('./getUser')
 const createProductlink = require('./createProductlink')
-// const productlinksRemove = require('./productlinksRemove')
+const removeProductlink = require('./removeProductlink')
 // const passwordUpdate = require('./passwordUpdate')
 // const passwordResetStart = require('./passwordResetStart')
 // const passwordResetComplete = require('./passwordResetComplete')
@@ -65,6 +65,10 @@ const main = async () => {
       method(
         'createProductlink',
         createProductlink({ AuthenticationAccountModel }),
+      ),
+      method(
+        'removeProductlink',
+        removeProductlink({ AuthenticationAccountModel }),
       ),
     )(req, res).catch(err => next(err))
   })
