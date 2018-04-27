@@ -62,4 +62,22 @@ describe('removeProductlink', () => {
       },
     )
   })
+
+  it('should throw an error with missing parameters', async () => {
+    expect.assertions(2)
+    const email = 'e@mail.com'
+    const AuthenticationAccountModel = {
+      updateOne: jest.fn(() => Promise.resolve()),
+    }
+    try {
+      await removeProductlink({ AuthenticationAccountModel })({})
+    } catch (error) {
+      expect(error.message).toBe('Please specify an _id or email')
+    }
+    try {
+      await removeProductlink({ AuthenticationAccountModel })({ email })
+    } catch (error) {
+      expect(error.message).toBe('Please specify a productName')
+    }
+  })
 })
