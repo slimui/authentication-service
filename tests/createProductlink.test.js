@@ -1,5 +1,4 @@
 const createProductlink = require('../src/createProductlink')
-const { ObjectID } = require('mongodb')
 
 describe('createProductlink', () => {
   it('should export a function', () => {
@@ -7,35 +6,35 @@ describe('createProductlink', () => {
   })
 
   it('should create a product link by id', async () => {
-    const id = 'some user id'
+    const _id = 'some user id'
     const productName = 'some product name'
     const foreignKey = 'some foreign key'
-    const collectionClient = {
+    const AuthenticationAccountModel = {
       updateOne: jest.fn(() =>
         Promise.resolve({
-          matchedCount: 1,
+          ok: 1,
         }),
       ),
     }
-    const response = await createProductlink({ collectionClient })({
-      id,
+    const response = await createProductlink({ AuthenticationAccountModel })({
+      _id,
       productName,
       foreignKey,
     })
     expect(response).toEqual({
       success: true,
     })
-    expect(collectionClient.updateOne).toBeCalledWith(
+    expect(AuthenticationAccountModel.updateOne).toBeCalledWith(
+      { $or: [{ _id }, { email: undefined }] },
       {
-        _id: ObjectID(id),
-      },
-      {
-        $set: {
-          [`productlinks.${productName}`]: {
+        $addToSet: {
+          productlinks: {
             foreignKey,
+            productName,
           },
         },
       },
+      { runValidators: true },
     )
   })
   it('should create a product link by email', async () => {

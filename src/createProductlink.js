@@ -36,7 +36,9 @@ module.exports = ({ AuthenticationAccountModel }) => async ({
     )
     if (result.ok !== 1) {
       throw createError({
-        message: `Could not update ${JSON.stringify(query)}`,
+        message: `Could not update ${JSON.stringify({
+          $or: [{ _id }, { email }],
+        })}`,
       })
     }
     return {
