@@ -7,7 +7,7 @@ const createProductlink = require('./createProductlink')
 const removeProductlink = require('./removeProductlink')
 const updatePassword = require('./updatePassword')
 const startPasswordReset = require('./startPasswordReset')
-// const passwordResetComplete = require('./passwordResetComplete')
+const completePasswordReset = require('./completePasswordReset')
 // const verify = require('./verify')
 const { rpc, method } = require('@bufferapp/micro-rpc')
 const app = express()
@@ -39,6 +39,10 @@ const main = async () => {
       method(
         'startPasswordReset',
         startPasswordReset({ AuthenticationAccountModel }),
+      ),
+      method(
+        'completePasswordReset',
+        completePasswordReset({ AuthenticationAccountModel }),
       ),
     )(req, res).catch(err => next(err))
   })

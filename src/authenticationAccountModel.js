@@ -72,6 +72,13 @@ module.exports = ({ mongooseConnection }) => {
   }) {
     return await compare(password, this.password)
   }
+  authenticationAccountSchema.methods.verifyResetToken = async function({
+    resetToken,
+  }) {
+    const now = new Date().getTime()
+    const expireTime = this.resetAt.getTime() + process.env.RESET_TIMEOUT * 1000
+    return resetToken === this.resetToken && expireTime >= now
+  }
   return mongooseConnection.model(
     'AuthenticationAccount',
     authenticationAccountSchema,
