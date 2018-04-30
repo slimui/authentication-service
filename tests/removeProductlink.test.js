@@ -12,6 +12,7 @@ describe('removeProductlink', () => {
       updateOne: jest.fn(() =>
         Promise.resolve({
           ok: 1,
+          n: 1,
         }),
       ),
     }
@@ -41,6 +42,7 @@ describe('removeProductlink', () => {
       updateOne: jest.fn(() =>
         Promise.resolve({
           ok: 1,
+          n: 1,
         }),
       ),
     }
@@ -89,6 +91,7 @@ describe('removeProductlink', () => {
       updateOne: jest.fn(() =>
         Promise.resolve({
           ok: 0,
+          n: 1,
         }),
       ),
     }
@@ -99,7 +102,7 @@ describe('removeProductlink', () => {
       })
     } catch (error) {
       expect(error.message).toBe(
-        'Could not update {"$or":[{"_id":"some user id"},{}]}',
+        'Could not remove product link from {"$or":[{"_id":"some user id"},{}]}',
       )
     }
   })

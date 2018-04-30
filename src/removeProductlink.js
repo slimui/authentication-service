@@ -25,9 +25,9 @@ module.exports = ({ AuthenticationAccountModel }) => async ({
       },
     },
   )
-  if (result.ok !== 1) {
+  if (result.n !== 1 || result.ok !== 1) {
     throw createError({
-      message: `Could not update ${JSON.stringify({
+      message: `Could not remove product link from ${JSON.stringify({
         $or: [{ _id }, { email }],
       })}`,
     })
