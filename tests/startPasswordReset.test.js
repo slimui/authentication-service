@@ -38,4 +38,29 @@ describe('startPasswordReset', () => {
       resetToken: uuid.uniqueId,
     })
   })
+
+  it('should start password reset by _id', async () => {
+    const _id = 'some id'
+    const AuthenticationAccountModel = {
+      updateOne: jest.fn(() =>
+        Promise.resolve({
+          n: 1,
+          ok: 1,
+        }),
+      ),
+    }
+    const response = await startPasswordReset({ AuthenticationAccountModel })({
+      _id,
+    })
+    expect(AuthenticationAccountModel.updateOne).toBeCalledWith(
+      {
+        $or: [{ _id }, { email: undefined }],
+      },
+      { $set: { resetAt: someDate, resetToken: 'uniqueId' } },
+      { runValidators: true },
+    )
+    expect(response).toEqual({
+      resetToken: uuid.uniqueId,
+    })
+  })
 })
