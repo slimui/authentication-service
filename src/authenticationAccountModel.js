@@ -79,6 +79,12 @@ module.exports = ({ mongooseConnection }) => {
     const expireTime = this.resetAt.getTime() + process.env.RESET_TIMEOUT * 1000
     return resetToken === this.resetToken && expireTime >= now
   }
+  authenticationAccountSchema.methods.verifyProductname = async function({
+    productName,
+  }) {
+    console.log('this.productlinks', this.productlinks)
+    return !!this.productlinks.find(link => link.productName === productName)
+  }
   return mongooseConnection.model(
     'AuthenticationAccount',
     authenticationAccountSchema,

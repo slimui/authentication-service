@@ -8,7 +8,7 @@ const removeProductlink = require('./removeProductlink')
 const updatePassword = require('./updatePassword')
 const startPasswordReset = require('./startPasswordReset')
 const completePasswordReset = require('./completePasswordReset')
-// const verify = require('./verify')
+const verifyUser = require('./verifyUser')
 const { rpc, method } = require('@bufferapp/micro-rpc')
 const app = express()
 
@@ -44,6 +44,7 @@ const main = async () => {
         'completePasswordReset',
         completePasswordReset({ AuthenticationAccountModel }),
       ),
+      method('verifyUser', verifyUser({ AuthenticationAccountModel })),
     )(req, res).catch(err => next(err))
   })
   app.listen(80, () => console.log('Started listening on port 80'))
