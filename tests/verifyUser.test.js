@@ -109,4 +109,92 @@ describe('verifyUser', () => {
       expect(error.message).toBe('productName is a required parameter')
     }
   })
+
+  it('should fail to validate a user with a bad password', async () => {
+    const email = 'e@mail.com'
+    const password = 'some password'
+    const productName = 'some product name'
+    const foreignKey = 'foreignKey'
+    const someUser = {
+      verifyPassword: jest.fn(() => false),
+      verifyProductname: jest.fn(() => true),
+      productlinks: [
+        {
+          productName,
+          foreignKey,
+        },
+      ],
+    }
+    const AuthenticationAccountModel = {
+      findOne: jest.fn(() => ({
+        exec: () => Promise.resolve(someUser),
+      })),
+    }
+    try {
+      await verifyUser({
+        AuthenticationAccountModel,
+      })({
+        email,
+        password,
+        productName,
+      })
+    } catch (error) {
+      expect(error.message).toBe('Could authenticate with credentials')
+    }
+  })
+  it('should fail to validate a user with a bad product name', async () => {
+    const email = 'e@mail.com'
+    const password = 'some password'
+    const productName = 'some product name'
+    const foreignKey = 'foreignKey'
+    const someUser = {
+      verifyPassword: jest.fn(() => true),
+      verifyProductname: jest.fn(() => false),
+      productlinks: [
+        {
+          productName,
+          foreignKey,
+        },
+      ],
+    }
+    const AuthenticationAccountModel = {
+      findOne: jest.fn(() => ({
+        exec: () => Promise.resolve(someUser),
+      })),
+    }
+    try {
+      await verifyUser({
+        AuthenticationAccountModel,
+      })({
+        email,
+        password,
+        productName,
+      })
+    } catch (error) {
+      expect(error.message).toBe('Could authenticate with credentials')
+    }
+  })
+
+  it('should fail to validate a user with a missing user', async () => {
+    const email = 'e@mail.com'
+    const password = 'some password'
+    const productName = 'some product name'
+    const someUser = null
+    const AuthenticationAccountModel = {
+      findOne: jest.fn(() => ({
+        exec: () => Promise.resolve(someUser),
+      })),
+    }
+    try {
+      await verifyUser({
+        AuthenticationAccountModel,
+      })({
+        email,
+        password,
+        productName,
+      })
+    } catch (error) {
+      expect(error.message).toBe('Could authenticate with credentials')
+    }
+  })
 })
