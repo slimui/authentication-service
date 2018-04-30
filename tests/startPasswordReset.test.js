@@ -63,4 +63,14 @@ describe('startPasswordReset', () => {
       resetToken: uuid.uniqueId,
     })
   })
+
+  it('should throw an error with missing parameters', async () => {
+    expect.assertions(1)
+    const AuthenticationAccountModel = {}
+    try {
+      await startPasswordReset({ AuthenticationAccountModel })({})
+    } catch (error) {
+      expect(error.message).toBe('_id or email must be specified')
+    }
+  })
 })
