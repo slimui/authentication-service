@@ -73,4 +73,25 @@ describe('startPasswordReset', () => {
       expect(error.message).toBe('_id or email must be specified')
     }
   })
+
+  it('should handle user who does not exist', async () => {
+    const email = 'e@mail.com'
+    const AuthenticationAccountModel = {
+      updateOne: jest.fn(() =>
+        Promise.resolve({
+          n: 0,
+          ok: 1,
+        }),
+      ),
+    }
+    try {
+      await startPasswordReset({ AuthenticationAccountModel })({
+        email,
+      })
+    } catch (error) {
+      expect(error.message).toBe(
+        'Could not start password reset on account with {"$or":[{},{"email":"e@mail.com"}]}',
+      )
+    }
+  })
 })
