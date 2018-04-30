@@ -1,13 +1,5 @@
 const { createError } = require('@bufferapp/micro-rpc')
 
-const throwFailedResponse = ({ _id, email }) => {
-  throw createError({
-    message: `Could not update account with ${email ? 'email' : '_id'}: ${
-      email ? email : _id
-    }`,
-  })
-}
-
 module.exports = ({ AuthenticationAccountModel }) => async ({
   _id,
   email,
