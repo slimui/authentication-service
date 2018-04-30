@@ -12,6 +12,7 @@ describe('createProductlink', () => {
     const AuthenticationAccountModel = {
       updateOne: jest.fn(() =>
         Promise.resolve({
+          n: 1,
           ok: 1,
         }),
       ),
@@ -45,6 +46,7 @@ describe('createProductlink', () => {
     const AuthenticationAccountModel = {
       updateOne: jest.fn(() =>
         Promise.resolve({
+          n: 1,
           ok: 1,
         }),
       ),
@@ -106,6 +108,7 @@ describe('createProductlink', () => {
     const AuthenticationAccountModel = {
       updateOne: jest.fn(() =>
         Promise.resolve({
+          n: 1,
           ok: 0,
         }),
       ),
@@ -118,7 +121,33 @@ describe('createProductlink', () => {
       })
     } catch (error) {
       expect(error.message).toBe(
-        'Could not update {"$or":[{"_id":"some user id"},{}]}',
+        'Could not create product link for {"$or":[{"_id":"some user id"},{}]}',
+      )
+    }
+  })
+
+  it('should handle a not finding user from mongodb', async () => {
+    expect.assertions(1)
+    const _id = 'some user id'
+    const productName = 'some product name'
+    const foreignKey = 'some foreign key'
+    const AuthenticationAccountModel = {
+      updateOne: jest.fn(() =>
+        Promise.resolve({
+          n: 0,
+          ok: 1,
+        }),
+      ),
+    }
+    try {
+      await createProductlink({ AuthenticationAccountModel })({
+        _id,
+        productName,
+        foreignKey,
+      })
+    } catch (error) {
+      expect(error.message).toBe(
+        'Could not create product link for {"$or":[{"_id":"some user id"},{}]}',
       )
     }
   })
