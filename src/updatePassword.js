@@ -1,71 +1,62 @@
-const { promisify } = require('util')
-const bcrypt = require('bcryptjs')
-const Joi = require('joi')
-const { validate, parseValidationErrorMessage } = require('./utils')
-const compare = promisify(bcrypt.compare)
-const hash = promisify(bcrypt.hash)
+const { createError } = require('@bufferapp/micro-rpc')
 
-const schema = Joi.object()
-  .keys({
-    email: Joi.string(),
-    id: Joi.string(),
-    password: Joi.string().required(),
-    newPassword: Joi.string().required(),
-  })
-  .xor('email', 'id')
-
-const sendFailedResponse = ({ res, id, email }) =>
-  res.status(400).send({
-    success: false,
-    message: `Could not update account with ${email ? 'email' : 'id'}: ${
-      email ? email : id
+const throwFailedResponse = ({ _id, email }) => {
+  throw createError({
+    message: `Could not update account with ${email ? 'email' : '_id'}: ${
+      email ? email : _id
     }`,
   })
+}
 
-module.exports = ({ collectionClient }) => async (req, res) => {
-  try {
-    await validate({
-      value: req.body,
-      schema,
-    })
-  } catch (error) {
-    res.status(400).send({
-      success: false,
-      message: parseValidationErrorMessage({ error }),
+module.exports = ({ AuthenticationAccountModel }) => async ({
+  _id,
+  email,
+  password,
+  newPassword,
+}) => {
+  if (!_id && !email) {
+    throw createError({
+      message: '_id or email must be specified',
     })
   }
-  // TODO: validate password
-  const { id, email, password, newPassword } = req.body
-  let query
-  if (email) {
-    query = { email }
-  } else {
-    query = {
-      _id: ObjectID(id),
-    }
+  if (!password) {
+    throw createError({
+      message: 'password is a required parameter',
+    })
   }
-  const account = await collectionClient.findOne(query)
-  if (!account) {
-    // could not find account
-    sendFailedResponse({ res, id, email })
-  } else {
-    if (!(await compare(password, account.password))) {
-      // password mismatch
-      sendFailedResponse({ res, id, email })
-    } else {
-      const result = await collectionClient.updateOne(query, {
-        $set: {
-          password: await hash(newPassword, 10),
-        },
-      })
-      if (result.matchedCount !== 1) {
-        // no account was updated
-        sendFailedResponse({ res, id, email })
-      } else {
-        res.send({
-          success: true,
-        })
-      }
-    }
+  if (!newPassword) {
+    throw createError({
+      message: 'newPassword is a required parameter',
+    })
+  }
+  if (password === newPassword) {
+    throw createError({
+      message: 'password and newPassword cannot match',
+    })
+  }
+  const user = await AuthenticationAccountModel.findOne({
+    $or: [{ _id }, { email }],
+  }).exec()
+  if (!user) {
+    // intentionally generic error
+    throw createError({
+      message: `Could not update account with ${email ? 'email' : '_id'}: ${
+        email ? email : _id
+      }`,
+    })
+  }
+  if (!(await user.verifyPassword({ password }))) {
+    // intentionally generic error
+    throw createError({
+      message: `Could not update account with ${email ? 'email' : '_id'}: ${
+        email ? email : _id
+      }`,
+    })
+  }
+  // set the raw password -- it gets hashed in the pre-save hook
+  user.password = newPassword
+  await user.save()
+  return {
+    success: true,
   }
 }

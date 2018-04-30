@@ -5,6 +5,7 @@ require('mongoose-type-email')
 
 const { Schema, SchemaTypes } = mongoose
 const hash = promisify(bcrypt.hash)
+const compare = promisify(bcrypt.compare)
 
 MIN_PASSWORD_LENGTH = 8
 MAX_PASSWORD_LENGTH = 128
@@ -64,7 +65,13 @@ module.exports = ({ mongooseConnection }) => {
   // hash the password before storing
   authenticationAccountSchema.pre('save', async function() {
     this.password = await hash(this.password, 10)
+    this.updatedAt = new Date()
   })
+  authenticationAccountSchema.methods.verifyPassword = async function({
+    password,
+  }) {
+    return await compare(password, this.password)
+  }
   return mongooseConnection.model(
     'AuthenticationAccount',
     authenticationAccountSchema,
