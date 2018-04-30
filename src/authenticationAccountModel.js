@@ -82,7 +82,6 @@ module.exports = ({ mongooseConnection }) => {
   authenticationAccountSchema.methods.verifyProductname = async function({
     productName,
   }) {
-    console.log('this.productlinks', this.productlinks)
     return !!this.productlinks.find(link => link.productName === productName)
   }
   return mongooseConnection.model(
