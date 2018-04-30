@@ -88,4 +88,26 @@ describe('updatePassword', () => {
       expect(error.message).toBe('newPassword is a required parameter')
     }
   })
+
+  it('should handle user who does not exist', async () => {
+    const email = 'e@mail.com'
+    const password = 'password'
+    const newPassword = 'newPassword'
+    const AuthenticationAccountModel = {
+      findOne: jest.fn(() => ({
+        exec: () => Promise.resolve(),
+      })),
+    }
+    try {
+      await updatePassword({ AuthenticationAccountModel })({
+        email,
+        password,
+        newPassword,
+      })
+    } catch (error) {
+      expect(error.message).toBe(
+        'Could not update account with email: e@mail.com',
+      )
+    }
+  })
 })
