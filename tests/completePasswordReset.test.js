@@ -71,4 +71,29 @@ describe('completePasswordReset', () => {
       success: true,
     })
   })
+
+  it('should throw an error with missing parameters', async () => {
+    expect.assertions(3)
+    const email = 'e@mail.com'
+    const resetToken = 'resetToken'
+    const AuthenticationAccountModel = {}
+    try {
+      await completePasswordReset({ AuthenticationAccountModel })({})
+    } catch (error) {
+      expect(error.message).toBe('_id or email must be specified')
+    }
+    try {
+      await completePasswordReset({ AuthenticationAccountModel })({ email })
+    } catch (error) {
+      expect(error.message).toBe('resetToken is a required parameter')
+    }
+    try {
+      await completePasswordReset({ AuthenticationAccountModel })({
+        email,
+        resetToken,
+      })
+    } catch (error) {
+      expect(error.message).toBe('password is a required parameter')
+    }
+  })
 })
