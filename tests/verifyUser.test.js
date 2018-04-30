@@ -84,4 +84,29 @@ describe('verifyUser', () => {
       foreignKey,
     })
   })
+
+  it('should throw an error with missing parameters', async () => {
+    expect.assertions(3)
+    const email = 'e@mail.com'
+    const password = 'password'
+    const AuthenticationAccountModel = {}
+    try {
+      await verifyUser({ AuthenticationAccountModel })({})
+    } catch (error) {
+      expect(error.message).toBe('_id or email must be specified')
+    }
+    try {
+      await verifyUser({ AuthenticationAccountModel })({ email })
+    } catch (error) {
+      expect(error.message).toBe('password is a required parameter')
+    }
+    try {
+      await verifyUser({ AuthenticationAccountModel })({
+        email,
+        password,
+      })
+    } catch (error) {
+      expect(error.message).toBe('productName is a required parameter')
+    }
+  })
 })
