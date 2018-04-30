@@ -66,4 +66,26 @@ describe('updatePassword', () => {
       success: true,
     })
   })
+
+  it('should throw an error with missing parameters', async () => {
+    expect.assertions(3)
+    const email = 'e@mail.com'
+    const password = 'password'
+    const AuthenticationAccountModel = {}
+    try {
+      await updatePassword({ AuthenticationAccountModel })({})
+    } catch (error) {
+      expect(error.message).toBe('_id or email must be specified')
+    }
+    try {
+      await updatePassword({ AuthenticationAccountModel })({ email })
+    } catch (error) {
+      expect(error.message).toBe('password is a required parameter')
+    }
+    try {
+      await updatePassword({ AuthenticationAccountModel })({ email, password })
+    } catch (error) {
+      expect(error.message).toBe('newPassword is a required parameter')
+    }
+  })
 })
