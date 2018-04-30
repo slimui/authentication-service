@@ -1,6 +1,14 @@
 const verifyUser = require('../src/verifyUser')
+let someDate = new Date()
 
 describe('verifyUser', () => {
+  beforeEach(() => {
+    global.Date = jest.fn(() => someDate)
+  })
+
+  afterEach(() => {
+    global.Date.mockRestore()
+  })
   it('should export a function', () => {
     expect(verifyUser).toBeDefined()
   })
@@ -18,6 +26,7 @@ describe('verifyUser', () => {
           foreignKey,
         },
       ],
+      save: jest.fn(),
     }
     const AuthenticationAccountModel = {
       findOne: jest.fn(() => ({
@@ -40,6 +49,8 @@ describe('verifyUser', () => {
     expect(someUser.verifyProductname).toBeCalledWith({
       productName,
     })
+    expect(someUser.save).toBeCalled()
+    expect(someUser.lastLoginAt).toBe(someDate)
     expect(response).toEqual({
       foreignKey,
     })
@@ -58,6 +69,7 @@ describe('verifyUser', () => {
           foreignKey,
         },
       ],
+      save: jest.fn(),
     }
     const AuthenticationAccountModel = {
       findOne: jest.fn(() => ({
@@ -80,6 +92,8 @@ describe('verifyUser', () => {
     expect(someUser.verifyProductname).toBeCalledWith({
       productName,
     })
+    expect(someUser.save).toBeCalled()
+    expect(someUser.lastLoginAt).toBe(someDate)
     expect(response).toEqual({
       foreignKey,
     })

@@ -18,9 +18,11 @@ module.exports = ({ mongooseConnection }) => {
       index: true,
       unique: true,
     },
+    hashedPassword: {
+      type: String,
+    },
     password: {
       type: String,
-      required: true,
       minlength: [
         MIN_PASSWORD_LENGTH,
         `shorter than min length (${MIN_PASSWORD_LENGTH})`,
@@ -64,13 +66,16 @@ module.exports = ({ mongooseConnection }) => {
   )
   // hash the password before storing
   authenticationAccountSchema.pre('save', async function() {
-    this.password = await hash(this.password, 10)
+    if (this.password) {
+      this.hashedPassword = await hash(this.password, 10)
+      this.password = undefined
+    }
     this.updatedAt = new Date()
   })
   authenticationAccountSchema.methods.verifyPassword = async function({
     password,
   }) {
-    return await compare(password, this.password)
+    return await compare(password, this.hashedPassword)
   }
   authenticationAccountSchema.methods.verifyResetToken = async function({
     resetToken,

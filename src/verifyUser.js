@@ -34,6 +34,8 @@ module.exports = ({ AuthenticationAccountModel }) => async ({
       message: 'Could authenticate with credentials',
     })
   }
+  user.lastLoginAt = new Date()
+  await user.save()
   return {
     foreignKey: user.productlinks.find(link => link.productName === productName)
       .foreignKey,
