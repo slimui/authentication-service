@@ -178,20 +178,20 @@ rpc.call('createProductlink', {
 }
 ```
 
-### api/productlinks/remove
+### removeProductlink
 
 Removes a link between the authentication service and an external service
 
 **Input**
 
 ```js
-{
+rpc.call('removeProductlink', {
   email: 'admin@bufferapp.com',
   // or
   id: 'some_mongo_id',
   // and
-  productName: 'reply'
-}
+  productName: 'reply',
+})
 ```
 
 **Output**
@@ -202,14 +202,21 @@ Removes a link between the authentication service and an external service
 {
   success: true
 }
+
 // fail -
-//    missing/invalid email
-//    missing/invalid id
-//    missing/invalid productName
+//    missing email
+//    missing id
+//    missing productName
 // code: 400
 {
-  success: false,
-  message: 'Could not remove product link'
+  message: 'Please specify a ...'
+}
+
+// fail -
+//    can't find user
+// code: 400
+{
+  message: 'Could not remove product link from ...'
 }
 ```
 
