@@ -9,37 +9,59 @@ Buffer Authentication Service
   _id: ObjectId('some_mongo_id')
   email: 'admin@bufferapp.com', // unique
   password: 'one_way_hashed',
-  productlinks: {
-    'some_product_key': {
-      foreignKey: 'some_foreign_key' // link to a product resource
-    }
-  },
+  productlinks: [
+    productName: 'some_product_key',
+    foreignKey: 'some_foreign_key',
+  ],
   resetToken: 'some_reset_token',
   resetAt: new Date(),
   createdAt: new Date(),
   updatedAt: new Date(),
   lastLoginAt: new Date(),
-  data: {} // bucket of any data we'll want to persist (future proofing)
 }
 ```
 
 ## API
 
-All of these requests are POST and parameters are passed in the request body.
+All endpoints are written as [@bufferapp/micro-rpc](https://github.com/hharnisc/micro-rpc) endpoints. If you're using JS there is a client: https://github.com/bufferapp/micro-rpc-client
 
-### api/create
+```js
+import RPCClient from 'micro-rpc-client'
 
-Creates an new account
+const main = async () => {
+  const rpc = new RPCClient({
+    url: 'https://some.rpc.buffer.com/rpc',
+  })
+  const result = await rpc.call('createUser', {
+    email: 'e@mail.com',
+    password: 'password',
+  })
+  console.log('result:', result)
+}
+
+main()
+```
+
+Under the hood the library is generating a POST with JSON data:
+
+```sh
+curl -H "Content-Type: application/json" -X POST -d '{"name": "createUser", "args": "{\"password\":\"my password\",\"email\":\"e@mail.com\"}"}' https://some.rpc.buffer.com/rpc | python -m json.tool
+
+# {
+#    "result": ...
+# }
+```
+
+### createUser
+
+Creates a new user
 
 **Input**
 
 ```js
 {
-  // and
   email: 'admin@bufferapp.com',
   password: 'some_password',
-  // optional
-  data: {}
 }
 ```
 
@@ -49,27 +71,18 @@ Creates an new account
 // success
 // code: 200
 {
-  success: true,
-  id: 'some_mongo_id'
+  _id: 'some_mongo_id'
 }
 // fail -
 //    missing/invalid email
 //    missing/invalid password
 // code: 400
 {
-  success: false,
-  message: 'Could not create account'
-}
-// fail -
-//    invalid data -- must be undefined or object
-// code: 400
-{
-  success: false,
-  message: 'Data must be an object'
+  message: 'email|password is a required parameter'
 }
 ```
 
-### api/get
+### getUser
 
 Gets an account information
 
@@ -79,7 +92,7 @@ Gets an account information
 {
   email: 'admin@bufferapp.com',
   // or
-  id: 'some_mongo_id'
+  _id: 'some_mongo_id'
 }
 ```
 
@@ -89,21 +102,39 @@ Gets an account information
 // success
 // code: 200
 {
-  success: true,
+  _id: 'some_mongo_id',
   email: 'admin@bufferapp.com',
   resetAt: new Date(),
   createdAt: new Date(),
   updatedAt: new Date(),
   lastLoginAt: new Date(),
-  data: {}
+  productlinks: [
+    {
+      productName: 'some_product_key',
+      foreignKey: 'some_foreign_key',
+    }
+  ]
 }
+```
+
+```js
 // fail -
-//    missing/invalid email
-//    missing/invalid id
+//    missing email
+//    missing \_id
 // code: 400
 {
   success: false,
-  message: 'Could not find account'
+  message: '_id or email must be specified'
+}
+```
+
+```js
+// fail -
+//    couldn't find a user
+// code: 400
+{
+  success: false,
+  message: 'Could not find user with query: ...'
 }
 ```
 
