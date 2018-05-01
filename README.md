@@ -121,7 +121,6 @@ rpc.call('getUser', {
 //    missing \_id
 // code: 400
 {
-  success: false,
   message: '_id or email must be specified'
 }
 
@@ -129,7 +128,6 @@ rpc.call('getUser', {
 //    couldn't find a user
 // code: 400
 {
-  success: false,
   message: 'Could not find user with query: ...'
 }
 ```
@@ -245,6 +243,7 @@ rpc.call('removeProductlink', {
 {
   success: true
 }
+
 // fail -
 //    missing email
 //    missing id
@@ -254,15 +253,23 @@ rpc.call('removeProductlink', {
 {
   message: 'Please specify a ...'
 }
+
 // fail -
 //    newPassword === password
 // code: 400
 {
   message: 'password and newPassword cannot match'
 }
+
+// fail -
+//    can't find user
+// code: 400
+{
+  message: 'Could not update account with ...'
+}
 ```
 
-### api/password/reset/start
+### startPasswordReset
 
 Initiates a password reset flow
 
@@ -271,11 +278,12 @@ _NOTE: this does not send an email, just creates a expirable token that can be u
 **Input**
 
 ```js
-{
+rpc.call('startPasswordReset', {
   email: 'admin@bufferapp.com',
   // or
   id: 'some_mongo_id'
-}
+})
+
 ```
 
 **Output**
@@ -284,14 +292,22 @@ _NOTE: this does not send an email, just creates a expirable token that can be u
 // success
 // code: 200
 {
-  success: true,
   resetToken: 'some_reset_token'
 }
-// fail - email or id
+
+// fail -
+//    missing email
+//    missing \_id
 // code: 400
 {
-  success: false,
-  message: 'Could not start reseting password'
+  message: '_id or email must be specified'
+}
+
+// fail -
+//    can't find user
+// code: 400
+{
+  message: 'Could not start password reset on account with ...'
 }
 ```
 
