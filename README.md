@@ -246,21 +246,19 @@ rpc.call('removeProductlink', {
   success: true
 }
 // fail -
-//    missing/invalid email
-//    missing/invalid id
+//    missing email
+//    missing id
 //    missing password
 //    missing newPassword
 // code: 400
 {
-  success: false,
-  message: 'Could not update password'
+  message: 'Please specify a ...'
 }
 // fail -
-//    invalid newPassword
+//    newPassword === password
 // code: 400
 {
-  success: false,
-  message: 'New password is invalid'
+  message: 'password and newPassword cannot match'
 }
 ```
 

@@ -8,17 +8,17 @@ module.exports = ({ AuthenticationAccountModel }) => async ({
 }) => {
   if (!_id && !email) {
     throw createError({
-      message: '_id or email must be specified',
+      message: 'Please specify an _id or email',
     })
   }
   if (!password) {
     throw createError({
-      message: 'password is a required parameter',
+      message: 'Please specify a password',
     })
   }
   if (!newPassword) {
     throw createError({
-      message: 'newPassword is a required parameter',
+      message: 'Please specify a newPassword',
     })
   }
   if (password === newPassword) {

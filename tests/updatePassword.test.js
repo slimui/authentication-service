@@ -75,17 +75,17 @@ describe('updatePassword', () => {
     try {
       await updatePassword({ AuthenticationAccountModel })({})
     } catch (error) {
-      expect(error.message).toBe('_id or email must be specified')
+      expect(error.message).toBe('Please specify an _id or email')
     }
     try {
       await updatePassword({ AuthenticationAccountModel })({ email })
     } catch (error) {
-      expect(error.message).toBe('password is a required parameter')
+      expect(error.message).toBe('Please specify a password')
     }
     try {
       await updatePassword({ AuthenticationAccountModel })({ email, password })
     } catch (error) {
-      expect(error.message).toBe('newPassword is a required parameter')
+      expect(error.message).toBe('Please specify a newPassword')
     }
   })
 
