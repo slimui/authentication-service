@@ -398,11 +398,13 @@ rpc.call('completePasswordReset', {
 ```js
 {
   RESET_TIMEOUT: 300, // seconds
-  MONGO_URL:some_mongo_url,
+  MONGO_URL: some_mongo_url,
 }
 ```
 
 ## Network Diagrams
+
+TODO: update these diagrams
 
 ![Create Account With Linked Product](images/CreateAccountLinkProduct.png)
 
