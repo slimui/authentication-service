@@ -115,9 +115,7 @@ rpc.call('getUser', {
     }
   ]
 }
-```
 
-```js
 // fail -
 //    missing email
 //    missing \_id
@@ -126,9 +124,7 @@ rpc.call('getUser', {
   success: false,
   message: '_id or email must be specified'
 }
-```
 
-```js
 // fail -
 //    couldn't find a user
 // code: 400
@@ -145,14 +141,14 @@ Creates (or overwrites) a link between the authentication service and an externa
 **Input**
 
 ```js
-{
+rpc.call('createProductlink', {
   email: 'admin@bufferapp.com',
   // or
   id: 'some_mongo_id',
   // and
   productName: 'reply',
   foreignKey: 'some_foreign_key'
-}
+})
 ```
 
 **Output**
@@ -163,15 +159,22 @@ Creates (or overwrites) a link between the authentication service and an externa
 {
   success: true,
 }
+
 // fail -
-//    missing/invalid email
-//    missing/invalid id
-//    missing/invalid productName
-//    missing/invalid foreignKey
+//    missing email
+//    missing id
+//    missing productName
+//    missing foreignKey
 // code: 400
 {
-  success: false,
-  message: 'Could not create product link'
+  message: 'Please specify a ...'
+}
+
+// fail -
+//    can't find user
+// code: 400
+{
+  message: 'Could not create product link for ...'
 }
 ```
 
