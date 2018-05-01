@@ -220,21 +220,21 @@ rpc.call('removeProductlink', {
 }
 ```
 
-### api/password/update
+### updatePassword
 
 Updates an existing accounts password (requires existing password)
 
 **Input**
 
 ```js
-{
+rpc.call('removeProductlink', {
   email: 'admin@bufferapp.com',
   // or
   id: 'some_mongo_id',
   // and
   password: 'some_password',
   newPassword: 'some_new_password'
-}
+})
 ```
 
 **Output**
