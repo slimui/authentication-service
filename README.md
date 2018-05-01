@@ -311,7 +311,7 @@ rpc.call('startPasswordReset', {
 }
 ```
 
-### api/password/reset/complete
+### completePasswordReset
 
 Completes a password reset flow
 
@@ -320,14 +320,14 @@ _NOTE: this does not send an email, just takes a expirable token that can be use
 **Input**
 
 ```js
-{
+rpc.call('completePasswordReset', {
   email: 'admin@bufferapp.com',
   // or
   id: 'some_mongo_id',
   // and
   resetToken: 'some_reset_token',
   password: 'some_new_password'
-}
+})
 ```
 
 **Output**
@@ -339,28 +339,13 @@ _NOTE: this does not send an email, just takes a expirable token that can be use
   success: true
 }
 // fail -
-//    invalid email
-//    invalid id
-//    invalid/missing/expired reset token
-//    invalid/missing password
+//    missing email
+//    missing id
+//    missing resetToken
+//    missing password
 // code: 400
 {
-  success: false,
-  message: 'Could not reset password'
-}
-// fail -
-//    invalid password
-// code: 400
-{
-  success: false,
-  message: 'Invalid password'
-}
-// fail -
-//    expired reset token
-// code: 400
-{
-  success: false,
-  message: 'Password reset expired'
+  message: 'Please specify a ...'
 }
 ```
 

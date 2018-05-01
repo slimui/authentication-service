@@ -13,12 +13,12 @@ module.exports = ({ AuthenticationAccountModel }) => async ({
   }
   if (!resetToken) {
     throw createError({
-      message: 'resetToken is a required parameter',
+      message: 'Please specify a resetToken',
     })
   }
   if (!password) {
     throw createError({
-      message: 'password is a required parameter',
+      message: 'Please specify a password',
     })
   }
   const user = await AuthenticationAccountModel.findOne({

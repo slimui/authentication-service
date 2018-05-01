@@ -85,7 +85,7 @@ describe('completePasswordReset', () => {
     try {
       await completePasswordReset({ AuthenticationAccountModel })({ email })
     } catch (error) {
-      expect(error.message).toBe('resetToken is a required parameter')
+      expect(error.message).toBe('Please specify a resetToken')
     }
     try {
       await completePasswordReset({ AuthenticationAccountModel })({
@@ -93,7 +93,7 @@ describe('completePasswordReset', () => {
         resetToken,
       })
     } catch (error) {
-      expect(error.message).toBe('password is a required parameter')
+      expect(error.message).toBe('Please specify a password')
     }
   })
 })
