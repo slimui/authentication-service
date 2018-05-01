@@ -59,10 +59,10 @@ Creates a new user
 **Input**
 
 ```js
-{
+rpc.call('createUser', {
   email: 'admin@bufferapp.com',
   password: 'some_password',
-}
+})
 ```
 
 **Output**
@@ -89,11 +89,11 @@ Gets an account information
 **Input**
 
 ```js
-{
+rpc.call('getUser', {
   email: 'admin@bufferapp.com',
   // or
   _id: 'some_mongo_id'
-}
+})
 ```
 
 **Output**
@@ -138,7 +138,7 @@ Gets an account information
 }
 ```
 
-### api/productlinks/create
+### createProductlink
 
 Creates (or overwrites) a link between the authentication service and an external service
 
