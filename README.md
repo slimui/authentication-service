@@ -142,7 +142,7 @@ Creates (or overwrites) a link between the authentication service and an externa
 rpc.call('createProductlink', {
   email: 'admin@bufferapp.com',
   // or
-  id: 'some_mongo_id',
+  _id: 'some_mongo_id',
   // and
   productName: 'reply',
   foreignKey: 'some_foreign_key'
@@ -186,7 +186,7 @@ Removes a link between the authentication service and an external service
 rpc.call('removeProductlink', {
   email: 'admin@bufferapp.com',
   // or
-  id: 'some_mongo_id',
+  _id: 'some_mongo_id',
   // and
   productName: 'reply',
 })
@@ -228,7 +228,7 @@ Updates an existing accounts password (requires existing password)
 rpc.call('removeProductlink', {
   email: 'admin@bufferapp.com',
   // or
-  id: 'some_mongo_id',
+  _id: 'some_mongo_id',
   // and
   password: 'some_password',
   newPassword: 'some_new_password'
@@ -281,7 +281,7 @@ _NOTE: this does not send an email, just creates a expirable token that can be u
 rpc.call('startPasswordReset', {
   email: 'admin@bufferapp.com',
   // or
-  id: 'some_mongo_id'
+  _id: 'some_mongo_id'
 })
 
 ```
@@ -297,7 +297,7 @@ rpc.call('startPasswordReset', {
 
 // fail -
 //    missing email
-//    missing \_id
+//    missing _id
 // code: 400
 {
   message: '_id or email must be specified'
@@ -323,7 +323,7 @@ _NOTE: this does not send an email, just takes a expirable token that can be use
 rpc.call('completePasswordReset', {
   email: 'admin@bufferapp.com',
   // or
-  id: 'some_mongo_id',
+  _id: 'some_mongo_id',
   // and
   resetToken: 'some_reset_token',
   password: 'some_new_password'
@@ -338,9 +338,10 @@ rpc.call('completePasswordReset', {
 {
   success: true
 }
+
 // fail -
 //    missing email
-//    missing id
+//    missing _id
 //    missing resetToken
 //    missing password
 // code: 400
@@ -349,21 +350,21 @@ rpc.call('completePasswordReset', {
 }
 ```
 
-### api/verify
+### verifyUser
 
 Verify authenticity with an email and password -- requires a product to be linked
 
 **Input**
 
 ```js
-{
+rpc.call('completePasswordReset', {
   email: 'admin@bufferapp.com',
   // or
-  id: 'some_mongo_id',
+  _id: 'some_mongo_id',
   // and
   password: 'some_password',
   productName: 'reply'
-}
+})
 ```
 
 **Output**
@@ -372,21 +373,23 @@ Verify authenticity with an email and password -- requires a product to be linke
 // success
 // code: 200
 {
-  success: true,
   foreignKey: 'some_foreign_key'
 }
-// fail - password + email combo
+
+// fail -
+//    missing email
+//    missing _id
+//    missing password
+//    missing productName
 // code: 400
 {
-  success: false,
-  message: 'Could not authenticate with credentials'
+  message: 'Please specify a ...'
 }
 
-// fail - productName invalid
-// code: 401
+// fail - password + email/_id + productName combo
+// code: 400
 {
-  success: false,
-  message: 'Invalid product credentials'
+  message: 'Could not authenticate with credentials'
 }
 ```
 
