@@ -47,6 +47,18 @@ createIndex(
 )
 ```
 
+## Access Patterns
+
+**\_id and email**
+
+The majority of queries and updates will be done using the \_id or or email address to look up a given user.
+
+**productlinks.productName + productlinks.foreignKey**
+
+_NOTE: this access pattern is not implemented yet, but is supported_
+
+It is possible to look up a given user by the product name and foreign key given the set of indexes and uniqueness criteria.
+
 ## API
 
 All endpoints are written as [@bufferapp/micro-rpc](https://github.com/hharnisc/micro-rpc) endpoints. If you're using JS there is a client: https://github.com/bufferapp/micro-rpc-client
