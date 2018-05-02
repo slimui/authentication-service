@@ -10,8 +10,10 @@ Buffer Authentication Service
   email: 'admin@bufferapp.com', // unique
   password: 'one_way_hashed',
   productlinks: [
-    productName: 'some_product_key',
-    foreignKey: 'some_foreign_key',
+    {
+      productName: 'some_product_key',
+      foreignKey: 'some_foreign_key',
+    },
   ],
   resetToken: 'some_reset_token',
   resetAt: new Date(),
@@ -19,6 +21,30 @@ Buffer Authentication Service
   updatedAt: new Date(),
   lastLoginAt: new Date(),
 }
+```
+
+## Indexes
+
+**email (unique)**
+
+Email addresses must be unique
+
+```js
+createIndex({ email: 1 }, { unique: 1 })
+```
+
+**productlinks.productName + productlinks.foreignKey (unique)**
+
+The combination of productName and foreignKey must be unique across all accounts
+
+```js
+createIndex(
+  {
+    'productlinks.productName': 1,
+    'productlinks.foreignKey': 1,
+  },
+  { unique: true },
+)
 ```
 
 ## API
@@ -92,7 +118,7 @@ Gets an account information
 rpc.call('getUser', {
   email: 'admin@bufferapp.com',
   // or
-  _id: 'some_mongo_id'
+  _id: 'some_mongo_id',
 })
 ```
 
@@ -145,7 +171,7 @@ rpc.call('createProductlink', {
   _id: 'some_mongo_id',
   // and
   productName: 'reply',
-  foreignKey: 'some_foreign_key'
+  foreignKey: 'some_foreign_key',
 })
 ```
 
@@ -231,7 +257,7 @@ rpc.call('removeProductlink', {
   _id: 'some_mongo_id',
   // and
   password: 'some_password',
-  newPassword: 'some_new_password'
+  newPassword: 'some_new_password',
 })
 ```
 
@@ -281,9 +307,8 @@ _NOTE: this does not send an email, just creates a expirable token that can be u
 rpc.call('startPasswordReset', {
   email: 'admin@bufferapp.com',
   // or
-  _id: 'some_mongo_id'
+  _id: 'some_mongo_id',
 })
-
 ```
 
 **Output**
@@ -326,7 +351,7 @@ rpc.call('completePasswordReset', {
   _id: 'some_mongo_id',
   // and
   resetToken: 'some_reset_token',
-  password: 'some_new_password'
+  password: 'some_new_password',
 })
 ```
 
@@ -363,7 +388,7 @@ rpc.call('completePasswordReset', {
   _id: 'some_mongo_id',
   // and
   password: 'some_password',
-  productName: 'reply'
+  productName: 'reply',
 })
 ```
 
