@@ -2,6 +2,36 @@
 
 Buffer Authentication Service
 
+## Quickstart
+
+To he easiest way to get started with the `Authentication Service` is to use [Buffer Dev](https://github.com/bufferapp/buffer-dev) (Buffer Dev is a private repo -- but is focused around docker-compose).
+
+```sh
+./dev up authentication-service
+```
+
+This will start up the `Authentication Service`, which will be available as http://authentication-service within the docker network and https://authentication.local.buffer.com/ (via /etc/hosts and a proxy)
+
+After that the RPCClient can be used to interact with the `Authentication Service` (see the [API section](https://github.com/bufferapp/authentication-service#api for more details)). Now you can create and authenticate new users:
+
+```js
+import RPCClient from 'micro-rpc-client'
+
+const main = async () => {
+  const rpc = new RPCClient({
+    url: 'http://authentication-service/rpc',
+  })
+  const result = await rpc.call('createUser', {
+    email: 'e@mail.com',
+    password: 'password',
+  })
+  // lets output the result (contains the user id)
+  console.log('result:', result)
+}
+
+main()
+```
+
 ## Model
 
 ```js
