@@ -32,6 +32,16 @@ const main = async () => {
 main()
 ```
 
+## Development
+
+Use Buffer Dev to start the `Authentication Service` in development mode (auto reload with Nodemon)
+
+```sh
+./dev up authentication-service-dev
+```
+
+The service will be available on the same URLS but will restart when code changes are made.
+
 ## Model
 
 ```js
