@@ -15,16 +15,11 @@ module.exports = ({ AuthenticationAccountModel }) => async ({
       message: 'Please specify a productName',
     })
   }
-  const result = await AuthenticationAccountModel.updateOne(
-    { $or: [{ _id }, { email }] },
-    {
-      $pull: {
-        productlinks: {
-          productName,
-        },
-      },
-    },
-  )
+  const { result } = await AuthenticationAccountModel.removeProductlink({
+    _id,
+    email,
+    productName,
+  })
   if (result.n !== 1 || result.ok !== 1) {
     throw createError({
       message: `Could not remove product link from ${JSON.stringify({

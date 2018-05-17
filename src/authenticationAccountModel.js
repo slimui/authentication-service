@@ -132,6 +132,26 @@ module.exports = ({ mongooseConnection }) => {
     }
   }
 
+  authenticationAccountSchema.statics.removeProductlink = async function({
+    _id,
+    email,
+    productName,
+  }) {
+    const result = await AuthenticationAccountModel.updateOne(
+      { $or: [{ _id }, { email }] },
+      {
+        $pull: {
+          productlinks: {
+            productName,
+          },
+        },
+      },
+    )
+    return {
+      result,
+    }
+  }
+
   return mongooseConnection.model(
     'AuthenticationAccount',
     authenticationAccountSchema,

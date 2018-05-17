@@ -9,10 +9,12 @@ describe('removeProductlink', () => {
     const _id = 'some user id'
     const productName = 'some product name'
     const AuthenticationAccountModel = {
-      updateOne: jest.fn(() =>
+      removeProductlink: jest.fn(() =>
         Promise.resolve({
-          ok: 1,
-          n: 1,
+          result: {
+            ok: 1,
+            n: 1,
+          },
         }),
       ),
     }
@@ -23,26 +25,23 @@ describe('removeProductlink', () => {
     expect(response).toEqual({
       success: true,
     })
-    expect(AuthenticationAccountModel.updateOne).toBeCalledWith(
-      { $or: [{ _id }, { email: undefined }] },
-      {
-        $pull: {
-          productlinks: {
-            productName,
-          },
-        },
-      },
-    )
+    expect(AuthenticationAccountModel.removeProductlink).toBeCalledWith({
+      _id,
+      email: undefined,
+      productName,
+    })
   })
 
   it('should remove a productlink by email', async () => {
     const email = 'e@mail.com'
     const productName = 'some product name'
     const AuthenticationAccountModel = {
-      updateOne: jest.fn(() =>
+      removeProductlink: jest.fn(() =>
         Promise.resolve({
-          ok: 1,
-          n: 1,
+          result: {
+            ok: 1,
+            n: 1,
+          },
         }),
       ),
     }
@@ -53,16 +52,11 @@ describe('removeProductlink', () => {
     expect(response).toEqual({
       success: true,
     })
-    expect(AuthenticationAccountModel.updateOne).toBeCalledWith(
-      { $or: [{ _id: undefined }, { email }] },
-      {
-        $pull: {
-          productlinks: {
-            productName,
-          },
-        },
-      },
-    )
+    expect(AuthenticationAccountModel.removeProductlink).toBeCalledWith({
+      _id: undefined,
+      email,
+      productName,
+    })
   })
 
   it('should throw an error with missing parameters', async () => {
@@ -88,10 +82,12 @@ describe('removeProductlink', () => {
     const _id = 'some user id'
     const productName = 'some product name'
     const AuthenticationAccountModel = {
-      updateOne: jest.fn(() =>
+      removeProductlink: jest.fn(() =>
         Promise.resolve({
-          ok: 0,
-          n: 1,
+          result: {
+            ok: 0,
+            n: 1,
+          },
         }),
       ),
     }
