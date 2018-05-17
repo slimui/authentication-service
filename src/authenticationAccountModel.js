@@ -98,17 +98,21 @@ module.exports = ({ mongooseConnection }) => {
     return !!this.productlinks.find(link => link.productName === productName)
   }
 
+  const generateIdOrEmailQuery = ({ _id, email }) => ({
+    $or: [{ _id }, { email }],
+  })
+
   authenticationAccountSchema.statics.findOneByIdOrEmail = async function({
     _id,
     email,
     select,
   }) {
     if (select) {
-      return await this.findOne({ $or: [{ _id }, { email }] })
+      return await this.findOne(generateIdOrEmailQuery({ _id, email }))
         .select(select)
         .exec()
     }
-    return await this.findOne({ $or: [{ _id }, { email }] }).exec()
+    return await this.findOne(generateIdOrEmailQuery({ _id, email })).exec()
   }
 
   authenticationAccountSchema.statics.createResetToken = async function({
@@ -117,7 +121,7 @@ module.exports = ({ mongooseConnection }) => {
   }) {
     const resetToken = uuid()
     const result = await AuthenticationAccountModel.updateOne(
-      { $or: [{ _id }, { email }] },
+      generateIdOrEmailQuery({ _id, email }),
       {
         $set: {
           resetAt: new Date(),
@@ -138,7 +142,7 @@ module.exports = ({ mongooseConnection }) => {
     productName,
   }) {
     const result = await AuthenticationAccountModel.updateOne(
-      { $or: [{ _id }, { email }] },
+      generateIdOrEmailQuery({ _id, email }),
       {
         $pull: {
           productlinks: {
@@ -159,7 +163,7 @@ module.exports = ({ mongooseConnection }) => {
     foreignKey,
   }) {
     const result = await AuthenticationAccountModel.updateOne(
-      { $or: [{ _id }, { email }] },
+      generateIdOrEmailQuery({ _id, email }),
       {
         $addToSet: {
           productlinks: {
