@@ -19,7 +19,7 @@ describe('verifyUser', () => {
     const foreignKey = 'foreignKey'
     const someUser = {
       verifyPassword: jest.fn(() => true),
-      verifyProductname: jest.fn(() => true),
+      verifyProductName: jest.fn(() => true),
       productlinks: [
         {
           productName,
@@ -46,7 +46,7 @@ describe('verifyUser', () => {
     expect(someUser.verifyPassword).toBeCalledWith({
       password,
     })
-    expect(someUser.verifyProductname).toBeCalledWith({
+    expect(someUser.verifyProductName).toBeCalledWith({
       productName,
     })
     expect(someUser.save).toBeCalled()
@@ -62,7 +62,7 @@ describe('verifyUser', () => {
     const foreignKey = 'foreignKey'
     const someUser = {
       verifyPassword: jest.fn(() => true),
-      verifyProductname: jest.fn(() => true),
+      verifyProductName: jest.fn(() => true),
       productlinks: [
         {
           productName,
@@ -89,7 +89,7 @@ describe('verifyUser', () => {
     expect(someUser.verifyPassword).toBeCalledWith({
       password,
     })
-    expect(someUser.verifyProductname).toBeCalledWith({
+    expect(someUser.verifyProductName).toBeCalledWith({
       productName,
     })
     expect(someUser.save).toBeCalled()
@@ -131,7 +131,7 @@ describe('verifyUser', () => {
     const foreignKey = 'foreignKey'
     const someUser = {
       verifyPassword: jest.fn(() => false),
-      verifyProductname: jest.fn(() => true),
+      verifyProductName: jest.fn(() => true),
       productlinks: [
         {
           productName,
@@ -163,7 +163,7 @@ describe('verifyUser', () => {
     const foreignKey = 'foreignKey'
     const someUser = {
       verifyPassword: jest.fn(() => true),
-      verifyProductname: jest.fn(() => false),
+      verifyProductName: jest.fn(() => false),
       productlinks: [
         {
           productName,

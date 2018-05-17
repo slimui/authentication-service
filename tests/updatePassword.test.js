@@ -11,6 +11,7 @@ describe('updatePassword', () => {
     const newPassword = 'newPassword'
     const someUser = {
       verifyPassword: jest.fn(() => true),
+      setPassword: jest.fn(),
       save: jest.fn(),
     }
     const AuthenticationAccountModel = {
@@ -29,7 +30,9 @@ describe('updatePassword', () => {
     expect(someUser.verifyPassword).toBeCalledWith({
       password,
     })
-    expect(someUser.password).toBe(newPassword)
+    expect(someUser.setPassword).toBeCalledWith({
+      password: newPassword,
+    })
     expect(someUser.save).toBeCalled()
     expect(response).toEqual({
       success: true,
@@ -42,6 +45,7 @@ describe('updatePassword', () => {
     const newPassword = 'newPassword'
     const someUser = {
       verifyPassword: jest.fn(() => true),
+      setPassword: jest.fn(),
       save: jest.fn(),
     }
     const AuthenticationAccountModel = {
@@ -60,7 +64,9 @@ describe('updatePassword', () => {
     expect(someUser.verifyPassword).toBeCalledWith({
       password,
     })
-    expect(someUser.password).toBe(newPassword)
+    expect(someUser.setPassword).toBeCalledWith({
+      password: newPassword,
+    })
     expect(someUser.save).toBeCalled()
     expect(response).toEqual({
       success: true,

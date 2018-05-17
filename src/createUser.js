@@ -17,6 +17,8 @@ module.exports = ({ AuthenticationAccountModel }) => async ({
   try {
     const authenticationAccount = new AuthenticationAccountModel({
       email,
+    })
+    authenticationAccount.setPassword({
       password,
     })
     const { _id } = await authenticationAccount.save()

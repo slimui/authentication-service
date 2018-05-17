@@ -45,8 +45,9 @@ module.exports = ({ AuthenticationAccountModel }) => async ({
       }`,
     })
   }
-  // set the raw password -- it gets hashed in the pre-save hook
-  user.password = newPassword
+  await user.setPassword({
+    password: newPassword,
+  })
   await user.save()
   return {
     success: true,

@@ -27,7 +27,7 @@ module.exports = ({ AuthenticationAccountModel }) => async ({
   if (
     !user ||
     !(await user.verifyPassword({ password })) ||
-    !(await user.verifyProductname({ productName }))
+    !(await user.verifyProductName({ productName }))
   ) {
     // intentionally generic error
     throw createError({

@@ -9,13 +9,18 @@ describe('createUser', () => {
     const email = 'e@mail.com'
     const password = 'password'
     const _id = 'someId'
+    const someUser = {
+      setPassword: jest.fn(),
+      save: jest.fn(() => Promise.resolve({ _id })),
+    }
     const AuthenticationAccountModel = function() {
-      return {
-        save: jest.fn(() => Promise.resolve({ _id })),
-      }
+      return someUser
     }
     const response = await createUser({ AuthenticationAccountModel })({
       email,
+      password,
+    })
+    expect(someUser.setPassword).toBeCalledWith({
       password,
     })
     expect(response).toEqual({
@@ -60,6 +65,7 @@ describe('createUser', () => {
     const AuthenticationAccountModel = function() {
       return {
         save: jest.fn(() => Promise.reject(new Error(errorMessage))),
+        setPassword: jest.fn(),
       }
     }
     try {

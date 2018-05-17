@@ -7,8 +7,8 @@ const { Schema, SchemaTypes } = mongoose
 const hash = promisify(bcrypt.hash)
 const compare = promisify(bcrypt.compare)
 
-MIN_PASSWORD_LENGTH = 8
-MAX_PASSWORD_LENGTH = 128
+const MIN_PASSWORD_LENGTH = 8
+const MAX_PASSWORD_LENGTH = 128
 
 module.exports = ({ mongooseConnection }) => {
   const authenticationAccountSchema = Schema({
@@ -20,17 +20,7 @@ module.exports = ({ mongooseConnection }) => {
     },
     hashedPassword: {
       type: String,
-    },
-    password: {
-      type: String,
-      minlength: [
-        MIN_PASSWORD_LENGTH,
-        `shorter than min length (${MIN_PASSWORD_LENGTH})`,
-      ],
-      maxlength: [
-        MAX_PASSWORD_LENGTH,
-        `longer than max length (${MAX_PASSWORD_LENGTH})`,
-      ],
+      required: true,
     },
     productlinks: [
       {
@@ -64,31 +54,49 @@ module.exports = ({ mongooseConnection }) => {
     },
     { unique: true },
   )
-  // hash the password before storing
+
+  // bump the updatedAt feild on save
   authenticationAccountSchema.pre('save', async function() {
-    if (this.password) {
-      this.hashedPassword = await hash(this.password, 10)
-      this.password = undefined
-    }
     this.updatedAt = new Date()
   })
+
+  authenticationAccountSchema.methods.setPassword = async function({
+    password,
+  }) {
+    if (!password) throw new Error('Password is required')
+    if (typeof password !== 'string')
+      throw new Error('Password must be a String')
+    if (password.length < MIN_PASSWORD_LENGTH)
+      throw new Error(
+        `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+      )
+    if (password.length > MAX_PASSWORD_LENGTH)
+      throw new Error(
+        `Password must be less than ${MAX_PASSWORD_LENGTH} characters`,
+      )
+    this.hashedPassword = await hash(password, 10)
+  }
+
   authenticationAccountSchema.methods.verifyPassword = async function({
     password,
   }) {
     return await compare(password, this.hashedPassword)
   }
-  authenticationAccountSchema.methods.verifyResetToken = async function({
+
+  authenticationAccountSchema.methods.verifyResetToken = function({
     resetToken,
   }) {
     const now = new Date().getTime()
     const expireTime = this.resetAt.getTime() + process.env.RESET_TIMEOUT * 1000
     return resetToken === this.resetToken && expireTime >= now
   }
-  authenticationAccountSchema.methods.verifyProductname = async function({
+
+  authenticationAccountSchema.methods.verifyProductName = function({
     productName,
   }) {
     return !!this.productlinks.find(link => link.productName === productName)
   }
+
   return mongooseConnection.model(
     'AuthenticationAccount',
     authenticationAccountSchema,
