@@ -1,5 +1,8 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const logMiddleware = require('@bufferapp/logger/middleware')
+const connectDatadog = require('@bufferapp/connect-datadog')
+const { StatsD } = require('node-dogstatsd')
 const AuthenticationAccountModel = require('./authenticationAccountModel')
 const createUser = require('./createUser')
 const getUser = require('./getUser')
@@ -12,6 +15,24 @@ const verifyUser = require('./verifyUser')
 const { rpc, method } = require('@bufferapp/micro-rpc')
 const app = express()
 
+const isProduction = process.env.NODE_ENV === 'production'
+app.set('isProduction', isProduction)
+
+if (isProduction) {
+  const dogstatsd = new StatsD('dd-agent.default')
+  app.use(
+    connectDatadog({
+      dogstatsd,
+      response_code: true,
+      bufferRPC: true,
+      tags: [
+        'app:authentication-service',
+        `track:${process.env.RELEASE_TRACK || 'dev'}`,
+      ],
+    }),
+  )
+}
+
 const initDB = async () => {
   await mongoose.connect(process.env.MONGO_URL)
   return {
@@ -22,6 +43,9 @@ const initDB = async () => {
 }
 
 const main = async () => {
+  if (process.env.NODE_ENV !== 'test') {
+    app.use(logMiddleware({ name: 'AuthenticationService' }))
+  }
   const { AuthenticationAccountModel } = await initDB()
   app.post('/rpc', (req, res, next) => {
     rpc(
