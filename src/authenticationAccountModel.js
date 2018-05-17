@@ -11,43 +11,60 @@ const compare = promisify(bcrypt.compare)
 const MIN_PASSWORD_LENGTH = 8
 const MAX_PASSWORD_LENGTH = 128
 
+const transform = (doc, ret) => {
+  delete ret.hashedPassword
+  delete ret.resetToken
+  delete ret.__v
+  return ret
+}
+
 module.exports = ({ mongooseConnection }) => {
-  const authenticationAccountSchema = Schema({
-    email: {
-      type: SchemaTypes.Email,
-      required: true,
-      index: true,
-      unique: true,
-    },
-    hashedPassword: {
-      type: String,
-      required: true,
-    },
-    productlinks: [
-      {
-        _id: false,
-        productName: {
-          type: String,
-          required: true,
-        },
-        foreignKey: {
-          type: String,
-          required: true,
-        },
+  const authenticationAccountSchema = Schema(
+    {
+      email: {
+        type: SchemaTypes.Email,
+        required: true,
+        index: true,
+        unique: true,
       },
-    ],
-    resetToken: String,
-    resetAt: Date,
-    createdAt: {
-      type: Date,
-      default: Date.now,
+      hashedPassword: {
+        type: String,
+        required: true,
+      },
+      productlinks: [
+        {
+          _id: false,
+          productName: {
+            type: String,
+            required: true,
+          },
+          foreignKey: {
+            type: String,
+            required: true,
+          },
+        },
+      ],
+      resetToken: String,
+      resetAt: Date,
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
+      updatedAt: {
+        type: Date,
+        default: Date.now,
+      },
+      lastLoginAt: Date,
     },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
+    {
+      toObject: {
+        transform,
+      },
+      toJSON: {
+        transform,
+      },
     },
-    lastLoginAt: Date,
-  })
+  )
   authenticationAccountSchema.index(
     {
       'productlinks.productName': 1,
@@ -105,13 +122,7 @@ module.exports = ({ mongooseConnection }) => {
   authenticationAccountSchema.statics.findOneByIdOrEmail = async function({
     _id,
     email,
-    select,
   }) {
-    if (select) {
-      return await this.findOne(generateIdOrEmailQuery({ _id, email }))
-        .select(select)
-        .exec()
-    }
     return await this.findOne(generateIdOrEmailQuery({ _id, email })).exec()
   }
 

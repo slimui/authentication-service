@@ -9,7 +9,6 @@ module.exports = ({ AuthenticationAccountModel }) => async ({ email, _id }) => {
   const result = await AuthenticationAccountModel.findOneByIdOrEmail({
     _id,
     email,
-    select: '_id email productlinks resetAt createdAt updatedAt lastLoginAt',
   })
   if (!result) {
     throw createError({

@@ -21,7 +21,6 @@ describe('getUser', () => {
     expect(AuthenticationAccountModel.findOneByIdOrEmail).toBeCalledWith({
       _id: undefined,
       email,
-      select: '_id email productlinks resetAt createdAt updatedAt lastLoginAt',
     })
     expect(response).toEqual(account)
   })
@@ -42,7 +41,6 @@ describe('getUser', () => {
     expect(AuthenticationAccountModel.findOneByIdOrEmail).toBeCalledWith({
       _id,
       email: undefined,
-      select: '_id email productlinks resetAt createdAt updatedAt lastLoginAt',
     })
     expect(response).toEqual(account)
   })
