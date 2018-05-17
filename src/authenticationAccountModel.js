@@ -152,6 +152,29 @@ module.exports = ({ mongooseConnection }) => {
     }
   }
 
+  authenticationAccountSchema.statics.createProductlink = async function({
+    _id,
+    email,
+    productName,
+    foreignKey,
+  }) {
+    const result = await AuthenticationAccountModel.updateOne(
+      { $or: [{ _id }, { email }] },
+      {
+        $addToSet: {
+          productlinks: {
+            productName,
+            foreignKey,
+          },
+        },
+      },
+      { runValidators: true },
+    )
+    return {
+      result,
+    }
+  }
+
   return mongooseConnection.model(
     'AuthenticationAccount',
     authenticationAccountSchema,

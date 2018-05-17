@@ -23,18 +23,12 @@ module.exports = ({ AuthenticationAccountModel }) => async ({
     })
   }
   try {
-    const result = await AuthenticationAccountModel.updateOne(
-      { $or: [{ _id }, { email }] },
-      {
-        $addToSet: {
-          productlinks: {
-            productName,
-            foreignKey,
-          },
-        },
-      },
-      { runValidators: true },
-    )
+    const { result } = await AuthenticationAccountModel.createProductlink({
+      _id,
+      email,
+      foreignKey,
+      productName,
+    })
     if (result.n !== 1 || result.ok !== 1) {
       throw createError({
         message: `Could not create product link for ${JSON.stringify({

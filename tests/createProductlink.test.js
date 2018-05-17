@@ -10,10 +10,12 @@ describe('createProductlink', () => {
     const productName = 'reply'
     const foreignKey = 'some foreign key'
     const AuthenticationAccountModel = {
-      updateOne: jest.fn(() =>
+      createProductlink: jest.fn(() =>
         Promise.resolve({
-          n: 1,
-          ok: 1,
+          result: {
+            n: 1,
+            ok: 1,
+          },
         }),
       ),
     }
@@ -25,18 +27,12 @@ describe('createProductlink', () => {
     expect(response).toEqual({
       success: true,
     })
-    expect(AuthenticationAccountModel.updateOne).toBeCalledWith(
-      { $or: [{ _id }, { email: undefined }] },
-      {
-        $addToSet: {
-          productlinks: {
-            foreignKey,
-            productName,
-          },
-        },
-      },
-      { runValidators: true },
-    )
+    expect(AuthenticationAccountModel.createProductlink).toBeCalledWith({
+      _id,
+      email: undefined,
+      foreignKey,
+      productName,
+    })
   })
 
   it('should create a product link by email', async () => {
@@ -44,10 +40,12 @@ describe('createProductlink', () => {
     const productName = 'reply'
     const foreignKey = 'some foreign key'
     const AuthenticationAccountModel = {
-      updateOne: jest.fn(() =>
+      createProductlink: jest.fn(() =>
         Promise.resolve({
-          n: 1,
-          ok: 1,
+          result: {
+            n: 1,
+            ok: 1,
+          },
         }),
       ),
     }
@@ -59,18 +57,12 @@ describe('createProductlink', () => {
     expect(response).toEqual({
       success: true,
     })
-    expect(AuthenticationAccountModel.updateOne).toBeCalledWith(
-      { $or: [{ _id: undefined }, { email }] },
-      {
-        $addToSet: {
-          productlinks: {
-            foreignKey,
-            productName,
-          },
-        },
-      },
-      { runValidators: true },
-    )
+    expect(AuthenticationAccountModel.createProductlink).toBeCalledWith({
+      _id: undefined,
+      email,
+      foreignKey,
+      productName,
+    })
   })
 
   it('should throw an error with missing parameters', async () => {
@@ -108,10 +100,12 @@ describe('createProductlink', () => {
     const productName = 'reply'
     const foreignKey = 'some foreign key'
     const AuthenticationAccountModel = {
-      updateOne: jest.fn(() =>
+      createProductlink: jest.fn(() =>
         Promise.resolve({
-          n: 1,
-          ok: 0,
+          result: {
+            n: 1,
+            ok: 0,
+          },
         }),
       ),
     }
@@ -134,10 +128,12 @@ describe('createProductlink', () => {
     const productName = 'reply'
     const foreignKey = 'some foreign key'
     const AuthenticationAccountModel = {
-      updateOne: jest.fn(() =>
+      createProductlink: jest.fn(() =>
         Promise.resolve({
-          n: 0,
-          ok: 1,
+          result: {
+            n: 0,
+            ok: 1,
+          },
         }),
       ),
     }
@@ -159,10 +155,12 @@ describe('createProductlink', () => {
     const _id = 'some user id'
     const foreignKey = 'some foreign key'
     const AuthenticationAccountModel = {
-      updateOne: jest.fn(() =>
+      createProductlink: jest.fn(() =>
         Promise.resolve({
-          n: 1,
-          ok: 1,
+          result: {
+            n: 1,
+            ok: 1,
+          },
         }),
       ),
     }
