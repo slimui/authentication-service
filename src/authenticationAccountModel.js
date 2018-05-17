@@ -1,3 +1,4 @@
+const uuid = require('uuid/v4')
 const bcrypt = require('bcryptjs')
 const { promisify } = require('util')
 const mongoose = require('mongoose')
@@ -108,6 +109,27 @@ module.exports = ({ mongooseConnection }) => {
         .exec()
     }
     return await this.findOne({ $or: [{ _id }, { email }] }).exec()
+  }
+
+  authenticationAccountSchema.statics.createResetToken = async function({
+    _id,
+    email,
+  }) {
+    const resetToken = uuid()
+    const result = await AuthenticationAccountModel.updateOne(
+      { $or: [{ _id }, { email }] },
+      {
+        $set: {
+          resetAt: new Date(),
+          resetToken,
+        },
+      },
+      { runValidators: true },
+    )
+    return {
+      result,
+      resetToken,
+    }
   }
 
   return mongooseConnection.model(

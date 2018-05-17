@@ -1,4 +1,3 @@
-const uuid = require('uuid/v4')
 const startPasswordReset = require('../src/startPasswordReset')
 let someDate = new Date()
 
@@ -16,51 +15,53 @@ describe('startPasswordReset', () => {
 
   it('should start password reset by email', async () => {
     const email = 'e@mail.com'
+    const uniqueId = 'some uniqueId'
     const AuthenticationAccountModel = {
-      updateOne: jest.fn(() =>
+      generateResetToken: jest.fn(() =>
         Promise.resolve({
-          n: 1,
-          ok: 1,
+          result: {
+            n: 1,
+            ok: 1,
+          },
+          resetToken: uniqueId,
         }),
       ),
     }
     const response = await startPasswordReset({ AuthenticationAccountModel })({
       email,
     })
-    expect(AuthenticationAccountModel.updateOne).toBeCalledWith(
-      {
-        $or: [{ _id: undefined }, { email }],
-      },
-      { $set: { resetAt: someDate, resetToken: 'uniqueId' } },
-      { runValidators: true },
-    )
+    expect(AuthenticationAccountModel.generateResetToken).toBeCalledWith({
+      _id: undefined,
+      email,
+    })
     expect(response).toEqual({
-      resetToken: uuid.uniqueId,
+      resetToken: uniqueId,
     })
   })
 
   it('should start password reset by _id', async () => {
     const _id = 'some id'
+    const uniqueId = 'some uniqueId'
     const AuthenticationAccountModel = {
-      updateOne: jest.fn(() =>
+      generateResetToken: jest.fn(() =>
         Promise.resolve({
-          n: 1,
-          ok: 1,
+          result: {
+            n: 1,
+            ok: 1,
+          },
+          resetToken: uniqueId,
         }),
       ),
     }
     const response = await startPasswordReset({ AuthenticationAccountModel })({
       _id,
     })
-    expect(AuthenticationAccountModel.updateOne).toBeCalledWith(
-      {
-        $or: [{ _id }, { email: undefined }],
-      },
-      { $set: { resetAt: someDate, resetToken: 'uniqueId' } },
-      { runValidators: true },
-    )
+    expect(AuthenticationAccountModel.generateResetToken).toBeCalledWith({
+      _id,
+      email: undefined,
+    })
     expect(response).toEqual({
-      resetToken: uuid.uniqueId,
+      resetToken: uniqueId,
     })
   })
 
@@ -77,10 +78,12 @@ describe('startPasswordReset', () => {
   it('should handle user who does not exist', async () => {
     const email = 'e@mail.com'
     const AuthenticationAccountModel = {
-      updateOne: jest.fn(() =>
+      generateResetToken: jest.fn(() =>
         Promise.resolve({
-          n: 0,
-          ok: 1,
+          result: {
+            n: 0,
+            ok: 1,
+          },
         }),
       ),
     }
@@ -97,11 +100,14 @@ describe('startPasswordReset', () => {
 
   it('should handle not OK result', async () => {
     const email = 'e@mail.com'
+
     const AuthenticationAccountModel = {
-      updateOne: jest.fn(() =>
+      generateResetToken: jest.fn(() =>
         Promise.resolve({
-          n: 1,
-          ok: 0,
+          result: {
+            n: 1,
+            ok: 0,
+          },
         }),
       ),
     }
