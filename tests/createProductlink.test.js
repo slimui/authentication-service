@@ -7,7 +7,7 @@ describe('createProductlink', () => {
 
   it('should create a product link by id', async () => {
     const _id = 'some user id'
-    const productName = 'some product name'
+    const productName = 'reply'
     const foreignKey = 'some foreign key'
     const AuthenticationAccountModel = {
       updateOne: jest.fn(() =>
@@ -41,7 +41,7 @@ describe('createProductlink', () => {
 
   it('should create a product link by email', async () => {
     const email = 'e@mail.com'
-    const productName = 'some product name'
+    const productName = 'reply'
     const foreignKey = 'some foreign key'
     const AuthenticationAccountModel = {
       updateOne: jest.fn(() =>
@@ -76,7 +76,7 @@ describe('createProductlink', () => {
   it('should throw an error with missing parameters', async () => {
     expect.assertions(3)
     const email = 'e@mail.com'
-    const productName = 'some product name'
+    const productName = 'reply'
     const AuthenticationAccountModel = {
       updateOne: jest.fn(() => Promise.resolve()),
     }
@@ -88,7 +88,9 @@ describe('createProductlink', () => {
     try {
       await createProductlink({ AuthenticationAccountModel })({ email })
     } catch (error) {
-      expect(error.message).toBe('Please specify a productName')
+      expect(error.message).toBe(
+        'Please specify a valid productName "publish" "reply" or "analyze"',
+      )
     }
     try {
       await createProductlink({ AuthenticationAccountModel })({
@@ -103,7 +105,7 @@ describe('createProductlink', () => {
   it('should handle a not ok error from mongodb', async () => {
     expect.assertions(1)
     const _id = 'some user id'
-    const productName = 'some product name'
+    const productName = 'reply'
     const foreignKey = 'some foreign key'
     const AuthenticationAccountModel = {
       updateOne: jest.fn(() =>
@@ -129,7 +131,7 @@ describe('createProductlink', () => {
   it('should handle a not finding user from mongodb', async () => {
     expect.assertions(1)
     const _id = 'some user id'
-    const productName = 'some product name'
+    const productName = 'reply'
     const foreignKey = 'some foreign key'
     const AuthenticationAccountModel = {
       updateOne: jest.fn(() =>
@@ -148,6 +150,46 @@ describe('createProductlink', () => {
     } catch (error) {
       expect(error.message).toBe(
         'Could not create product link for {"$or":[{"_id":"some user id"},{}]}',
+      )
+    }
+  })
+
+  it('should only allow "publish" "reply" "analyze" product links', async () => {
+    expect.assertions(1)
+    const _id = 'some user id'
+    const foreignKey = 'some foreign key'
+    const AuthenticationAccountModel = {
+      updateOne: jest.fn(() =>
+        Promise.resolve({
+          n: 1,
+          ok: 1,
+        }),
+      ),
+    }
+    await createProductlink({ AuthenticationAccountModel })({
+      _id,
+      productName: 'publish',
+      foreignKey,
+    })
+    await createProductlink({ AuthenticationAccountModel })({
+      _id,
+      productName: 'reply',
+      foreignKey,
+    })
+    await createProductlink({ AuthenticationAccountModel })({
+      _id,
+      productName: 'analyze',
+      foreignKey,
+    })
+    try {
+      await createProductlink({ AuthenticationAccountModel })({
+        _id,
+        productName: 'nope',
+        foreignKey,
+      })
+    } catch (error) {
+      expect(error.message).toBe(
+        'Please specify a valid productName "publish" "reply" or "analyze"',
       )
     }
   })

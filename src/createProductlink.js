@@ -11,9 +11,10 @@ module.exports = ({ AuthenticationAccountModel }) => async ({
       message: 'Please specify an _id or email',
     })
   }
-  if (!productName) {
+  if (!productName || !['publish', 'reply', 'analyze'].includes(productName)) {
     throw createError({
-      message: 'Please specify a productName',
+      message:
+        'Please specify a valid productName "publish" "reply" or "analyze"',
     })
   }
   if (!foreignKey) {

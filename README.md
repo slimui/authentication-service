@@ -222,7 +222,7 @@ rpc.call('createProductlink', {
   // or
   _id: 'some_mongo_id',
   // and
-  productName: 'reply',
+  productName: 'reply', // "publish" "reply" or "analyze"'
   foreignKey: 'some_foreign_key',
 })
 ```
