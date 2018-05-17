@@ -29,9 +29,7 @@ describe('verifyUser', () => {
       save: jest.fn(),
     }
     const AuthenticationAccountModel = {
-      findOne: jest.fn(() => ({
-        exec: () => Promise.resolve(someUser),
-      })),
+      findOneByIdOrEmail: jest.fn(() => Promise.resolve(someUser)),
     }
     const response = await verifyUser({
       AuthenticationAccountModel,
@@ -40,8 +38,9 @@ describe('verifyUser', () => {
       password,
       productName,
     })
-    expect(AuthenticationAccountModel.findOne).toBeCalledWith({
-      $or: [{ _id: undefined }, { email }],
+    expect(AuthenticationAccountModel.findOneByIdOrEmail).toBeCalledWith({
+      _id: undefined,
+      email,
     })
     expect(someUser.verifyPassword).toBeCalledWith({
       password,
@@ -72,9 +71,7 @@ describe('verifyUser', () => {
       save: jest.fn(),
     }
     const AuthenticationAccountModel = {
-      findOne: jest.fn(() => ({
-        exec: () => Promise.resolve(someUser),
-      })),
+      findOneByIdOrEmail: jest.fn(() => Promise.resolve(someUser)),
     }
     const response = await verifyUser({
       AuthenticationAccountModel,
@@ -83,8 +80,9 @@ describe('verifyUser', () => {
       password,
       productName,
     })
-    expect(AuthenticationAccountModel.findOne).toBeCalledWith({
-      $or: [{ _id }, { email: undefined }],
+    expect(AuthenticationAccountModel.findOneByIdOrEmail).toBeCalledWith({
+      _id,
+      email: undefined,
     })
     expect(someUser.verifyPassword).toBeCalledWith({
       password,
@@ -140,9 +138,7 @@ describe('verifyUser', () => {
       ],
     }
     const AuthenticationAccountModel = {
-      findOne: jest.fn(() => ({
-        exec: () => Promise.resolve(someUser),
-      })),
+      findOneByIdOrEmail: jest.fn(() => Promise.resolve(someUser)),
     }
     try {
       await verifyUser({
@@ -172,9 +168,7 @@ describe('verifyUser', () => {
       ],
     }
     const AuthenticationAccountModel = {
-      findOne: jest.fn(() => ({
-        exec: () => Promise.resolve(someUser),
-      })),
+      findOneByIdOrEmail: jest.fn(() => Promise.resolve(someUser)),
     }
     try {
       await verifyUser({
@@ -195,9 +189,7 @@ describe('verifyUser', () => {
     const productName = 'some product name'
     const someUser = null
     const AuthenticationAccountModel = {
-      findOne: jest.fn(() => ({
-        exec: () => Promise.resolve(someUser),
-      })),
+      findOneByIdOrEmail: jest.fn(() => Promise.resolve(someUser)),
     }
     try {
       await verifyUser({

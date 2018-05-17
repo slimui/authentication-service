@@ -97,6 +97,19 @@ module.exports = ({ mongooseConnection }) => {
     return !!this.productlinks.find(link => link.productName === productName)
   }
 
+  authenticationAccountSchema.statics.findOneByIdOrEmail = async function({
+    _id,
+    email,
+    select,
+  }) {
+    if (select) {
+      return await this.findOne({ $or: [{ _id }, { email }] })
+        .select(select)
+        .exec()
+    }
+    return await this.findOne({ $or: [{ _id }, { email }] }).exec()
+  }
+
   return mongooseConnection.model(
     'AuthenticationAccount',
     authenticationAccountSchema,

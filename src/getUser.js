@@ -6,11 +6,11 @@ module.exports = ({ AuthenticationAccountModel }) => async ({ email, _id }) => {
       message: '_id or email must be specified',
     })
   }
-  const result = await AuthenticationAccountModel.findOne({
-    $or: [{ _id }, { email }],
+  const result = await AuthenticationAccountModel.findOneByIdOrEmail({
+    _id,
+    email,
+    select: '_id email productlinks resetAt createdAt updatedAt lastLoginAt',
   })
-    .select('_id email productlinks resetAt createdAt updatedAt lastLoginAt')
-    .exec()
   if (!result) {
     throw createError({
       message: `Could not find user with query: ${JSON.stringify({

@@ -14,9 +14,7 @@ describe('completePasswordReset', () => {
       save: jest.fn(),
     }
     const AuthenticationAccountModel = {
-      findOne: jest.fn(() => ({
-        exec: () => Promise.resolve(someUser),
-      })),
+      findOneByIdOrEmail: jest.fn(() => Promise.resolve(someUser)),
     }
     const response = await completePasswordReset({
       AuthenticationAccountModel,
@@ -25,8 +23,9 @@ describe('completePasswordReset', () => {
       resetToken,
       password,
     })
-    expect(AuthenticationAccountModel.findOne).toBeCalledWith({
-      $or: [{ _id: undefined }, { email }],
+    expect(AuthenticationAccountModel.findOneByIdOrEmail).toBeCalledWith({
+      _id: undefined,
+      email,
     })
     expect(someUser.verifyResetToken).toBeCalledWith({
       resetToken,
@@ -47,9 +46,7 @@ describe('completePasswordReset', () => {
       save: jest.fn(),
     }
     const AuthenticationAccountModel = {
-      findOne: jest.fn(() => ({
-        exec: () => Promise.resolve(someUser),
-      })),
+      findOneByIdOrEmail: jest.fn(() => Promise.resolve(someUser)),
     }
     const response = await completePasswordReset({
       AuthenticationAccountModel,
@@ -58,8 +55,9 @@ describe('completePasswordReset', () => {
       resetToken,
       password,
     })
-    expect(AuthenticationAccountModel.findOne).toBeCalledWith({
-      $or: [{ _id }, { email: undefined }],
+    expect(AuthenticationAccountModel.findOneByIdOrEmail).toBeCalledWith({
+      _id,
+      email: undefined,
     })
     expect(someUser.verifyResetToken).toBeCalledWith({
       resetToken,

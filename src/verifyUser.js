@@ -21,9 +21,10 @@ module.exports = ({ AuthenticationAccountModel }) => async ({
       message: 'productName is a required parameter',
     })
   }
-  const user = await AuthenticationAccountModel.findOne({
-    $or: [{ _id }, { email }],
-  }).exec()
+  const user = await AuthenticationAccountModel.findOneByIdOrEmail({
+    _id,
+    email,
+  })
   if (
     !user ||
     !(await user.verifyPassword({ password })) ||

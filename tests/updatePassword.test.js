@@ -15,17 +15,16 @@ describe('updatePassword', () => {
       save: jest.fn(),
     }
     const AuthenticationAccountModel = {
-      findOne: jest.fn(() => ({
-        exec: () => Promise.resolve(someUser),
-      })),
+      findOneByIdOrEmail: jest.fn(() => Promise.resolve(someUser)),
     }
     const response = await updatePassword({ AuthenticationAccountModel })({
       email,
       password,
       newPassword,
     })
-    expect(AuthenticationAccountModel.findOne).toBeCalledWith({
-      $or: [{ _id: undefined }, { email }],
+    expect(AuthenticationAccountModel.findOneByIdOrEmail).toBeCalledWith({
+      _id: undefined,
+      email,
     })
     expect(someUser.verifyPassword).toBeCalledWith({
       password,
@@ -49,17 +48,16 @@ describe('updatePassword', () => {
       save: jest.fn(),
     }
     const AuthenticationAccountModel = {
-      findOne: jest.fn(() => ({
-        exec: () => Promise.resolve(someUser),
-      })),
+      findOneByIdOrEmail: jest.fn(() => Promise.resolve(someUser)),
     }
     const response = await updatePassword({ AuthenticationAccountModel })({
       _id,
       password,
       newPassword,
     })
-    expect(AuthenticationAccountModel.findOne).toBeCalledWith({
-      $or: [{ _id }, { email: undefined }],
+    expect(AuthenticationAccountModel.findOneByIdOrEmail).toBeCalledWith({
+      _id,
+      email: undefined,
     })
     expect(someUser.verifyPassword).toBeCalledWith({
       password,
@@ -100,9 +98,7 @@ describe('updatePassword', () => {
     const password = 'password'
     const newPassword = 'newPassword'
     const AuthenticationAccountModel = {
-      findOne: jest.fn(() => ({
-        exec: () => Promise.resolve(),
-      })),
+      findOneByIdOrEmail: jest.fn(() => Promise.resolve()),
     }
     try {
       await updatePassword({ AuthenticationAccountModel })({

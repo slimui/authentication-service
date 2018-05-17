@@ -13,17 +13,15 @@ describe('getUser', () => {
       email,
     }
     const AuthenticationAccountModel = {
-      findOne: jest.fn(() => ({
-        select: () => ({
-          exec: () => Promise.resolve(account),
-        }),
-      })),
+      findOneByIdOrEmail: jest.fn(() => Promise.resolve(account)),
     }
     const response = await getUser({ AuthenticationAccountModel })({
       email,
     })
-    expect(AuthenticationAccountModel.findOne).toBeCalledWith({
-      $or: [{ _id: undefined }, { email }],
+    expect(AuthenticationAccountModel.findOneByIdOrEmail).toBeCalledWith({
+      _id: undefined,
+      email,
+      select: '_id email productlinks resetAt createdAt updatedAt lastLoginAt',
     })
     expect(response).toEqual(account)
   })
@@ -36,17 +34,15 @@ describe('getUser', () => {
       email,
     }
     const AuthenticationAccountModel = {
-      findOne: jest.fn(() => ({
-        select: () => ({
-          exec: () => Promise.resolve(account),
-        }),
-      })),
+      findOneByIdOrEmail: jest.fn(() => Promise.resolve(account)),
     }
     const response = await getUser({ AuthenticationAccountModel })({
       _id,
     })
-    expect(AuthenticationAccountModel.findOne).toBeCalledWith({
-      $or: [{ _id }, { email: undefined }],
+    expect(AuthenticationAccountModel.findOneByIdOrEmail).toBeCalledWith({
+      _id,
+      email: undefined,
+      select: '_id email productlinks resetAt createdAt updatedAt lastLoginAt',
     })
     expect(response).toEqual(account)
   })
@@ -66,15 +62,8 @@ describe('getUser', () => {
 
     const _id = 'some user id'
     const email = 'e@mail.com'
-    // const collectionClient = {
-    //   findOne: jest.fn(() => Promise.resolve()),
-    // }
     const AuthenticationAccountModel = {
-      findOne: jest.fn(() => ({
-        select: () => ({
-          exec: () => Promise.resolve(),
-        }),
-      })),
+      findOneByIdOrEmail: jest.fn(() => Promise.resolve()),
     }
     try {
       await getUser({ AuthenticationAccountModel })({

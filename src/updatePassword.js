@@ -26,9 +26,10 @@ module.exports = ({ AuthenticationAccountModel }) => async ({
       message: 'password and newPassword cannot match',
     })
   }
-  const user = await AuthenticationAccountModel.findOne({
-    $or: [{ _id }, { email }],
-  }).exec()
+  const user = await AuthenticationAccountModel.findOneByIdOrEmail({
+    _id,
+    email,
+  })
   if (!user) {
     // intentionally generic error
     throw createError({
